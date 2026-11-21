@@ -502,7 +502,10 @@ private fun ReadyColumn(
                 shapes = ListItemDefaults.segmentedShapes(0, count),
                 leadingContent = { Icon(Icons.Default.Code, null) },
                 content = { Text(state.metadata.packageName) },
-                supportingContent = if (!state.metadata.packageName.startsWith(BackupDefaults.PACKAGE_NAME_PREFIX)) {
+                supportingContent = if (
+                    !state.metadata.packageName.startsWith(BackupDefaults.PACKAGE_NAME_PREFIX) &&
+                    !state.metadata.packageName.startsWith(BackupDefaults.FORK_PACKAGE_NAME_PREFIX)
+                ) {
                     { Text(stringRes(R.string.backup_and_restore__restore__metadata_warn_different_vendor)) }
                 } else null,
             )

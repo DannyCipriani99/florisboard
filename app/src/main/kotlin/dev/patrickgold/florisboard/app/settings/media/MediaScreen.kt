@@ -58,12 +58,32 @@ fun MediaScreen() {
     ) { contentPadding ->
         ScrollableScreenColumn(contentPadding) {
             SegmentedListColumn {
-                val count = 1
+                val count = 3
                 ListPreference(
                     prefs.emoji.preferredSkinTone,
                     shapes = ListItemDefaults.segmentedShapes(0, count),
                     title = stringRes(R.string.prefs__media__emoji_preferred_skin_tone),
                     entries = enumDisplayEntriesOf(EmojiSkinTone::class),
+                )
+                DialogSliderPreference(
+                    prefs.emoji.sizePercent,
+                    shapes = ListItemDefaults.segmentedShapes(1, count),
+                    title = stringRes(R.string.prefs__media__emoji_size),
+                    valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
+                    min = 60,
+                    max = 250,
+                    stepIncrement = 5,
+                )
+                DialogSliderPreference(
+                    prefs.emoji.gridColumns,
+                    shapes = ListItemDefaults.segmentedShapes(2, count),
+                    title = stringRes(R.string.prefs__media__emoji_grid_columns),
+                    valueLabel = {
+                        if (it == 0) stringRes(R.string.prefs__media__emoji_grid_columns__auto) else it.toString()
+                    },
+                    min = 0,
+                    max = 12,
+                    stepIncrement = 1,
                 )
             }
 

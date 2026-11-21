@@ -27,6 +27,7 @@ object BackupDefaults {
     const val FILES_DIR = "files"
 
     const val PACKAGE_NAME_PREFIX = "dev.patrickgold.florisboard"
+    const val FORK_PACKAGE_NAME_PREFIX = "dev.dannycipriani.florisboard"
 
     const val RESTORE_MIN_VERSION_CODE = 64
     const val ARCHIVE_FILE_NAME = "backup.zip"

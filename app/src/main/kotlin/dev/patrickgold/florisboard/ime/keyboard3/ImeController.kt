@@ -103,6 +103,7 @@ class ImeController(
         prefs.keyboard.multiTapHighlightEnabled.asFlow(),
         prefs.keyboard.flickKeyHintEnabled.asFlow(),
         prefs.keyboard.flickKeyHintPlacement.asFlow(),
+        prefs.keyboard.deleteKeyWidthPercent.asFlow(),
     ) { values ->
         TouchModelOptions(
             showNumberRow = values[0] as Boolean,
@@ -113,6 +114,7 @@ class ImeController(
             multiTapHighlightEnabled = values[5] as Boolean,
             flickKeyHintEnabled = values[6] as Boolean,
             flickKeyHintPlacement = values[7] as FlickKeyHintPlacement,
+            deleteKeyWidthPercent = values[8] as Int,
         )
     }.stateIn(scope, SharingStarted.Eagerly, TouchModelOptions.Default)
 

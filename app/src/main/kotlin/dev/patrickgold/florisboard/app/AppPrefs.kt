@@ -225,6 +225,16 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "emoji__preferred_hair_style",
             default = EmojiHairStyle.DEFAULT,
         )
+        /** Emoji size in percent of the default size (100 = default). */
+        val sizePercent = int(
+            key = "emoji__size_percent",
+            default = 100,
+        )
+        /** Number of grid columns in the emoji palette; 0 = automatic (as many as fit). */
+        val gridColumns = int(
+            key = "emoji__grid_columns",
+            default = 0,
+        )
         val historyEnabled = boolean(
             key = "emoji__history_enabled",
             default = true,
@@ -464,6 +474,11 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val incognitoDisplayMode = enum(
             key = "keyboard__incognito_indicator",
             default = IncognitoDisplayMode.DISPLAY_BEHIND_KEYBOARD,
+        )
+
+        val deleteKeyWidthPercent = int(
+            key = "keyboard__delete_key_width_percent",
+            default = TouchModelOptions.Default.deleteKeyWidthPercent,
         )
 
         val fnKeyEnabled = boolean(

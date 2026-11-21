@@ -88,7 +88,7 @@ fun KeyboardScreen() {
     ) { contentPadding ->
         ScrollableScreenColumn(contentPadding) {
             SegmentedListColumn {
-                val count = 7
+                val count = 8
                 SwitchPreference(
                     prefs.keyboard.numberRow,
                     shapes = ListItemDefaults.segmentedShapes(0, count),
@@ -142,6 +142,15 @@ fun KeyboardScreen() {
                     shapes = ListItemDefaults.segmentedShapes(6, count),
                     title = stringRes(R.string.pref__keyboard__incognito_indicator__label),
                     entries = enumDisplayEntriesOf(IncognitoDisplayMode::class),
+                )
+                DialogSliderPreference(
+                    prefs.keyboard.deleteKeyWidthPercent,
+                    shapes = ListItemDefaults.segmentedShapes(7, count),
+                    title = stringRes(R.string.pref__keyboard__delete_key_width__label),
+                    valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
+                    min = 40,
+                    max = 150,
+                    stepIncrement = 5,
                 )
             }
 

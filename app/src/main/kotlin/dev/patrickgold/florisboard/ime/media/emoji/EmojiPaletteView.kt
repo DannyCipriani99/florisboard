@@ -163,6 +163,9 @@ fun EmojiPaletteView(
 
     val preferredSkinTone by prefs.emoji.preferredSkinTone.collectAsState()
     val emojiHistoryEnabled by prefs.emoji.historyEnabled.collectAsState()
+    val emojiSizePercent by prefs.emoji.sizePercent.collectAsState()
+    val emojiGridColumns by prefs.emoji.gridColumns.collectAsState()
+    val emojiScale = emojiSizePercent / 100f
 
     var activeCategory by remember(emojiHistoryEnabled) {
         if (emojiHistoryEnabled) {
@@ -191,6 +194,7 @@ fun EmojiPaletteView(
         EmojiKey(
             emojiSet = emojiSet,
             emojiCompatInstance = emojiCompatInstance,
+            emojiFontSize = EmojiDefaultFontSize * emojiScale,
             preferredSkinTone = preferredSkinTone,
             isPinned = isPinned,
             isRecent = isRecent,
@@ -365,7 +369,11 @@ fun EmojiPaletteView(
                         modifier = Modifier
                             .fillMaxSize()
                             .florisScrollbar(lazyGridState),
-                        columns = GridCells.Adaptive(minSize = EmojiBaseWidth),
+                        columns = if (emojiGridColumns > 0) {
+                            GridCells.Fixed(emojiGridColumns)
+                        } else {
+                            GridCells.Adaptive(minSize = EmojiBaseWidth * emojiScale)
+                        },
                         state = lazyGridState,
                     ) {
                         if (emojiMapping.pinned.isNotEmpty()) {
@@ -400,6 +408,7 @@ fun EmojiPaletteView(
 private fun EmojiKey(
     emojiSet: EmojiSet,
     emojiCompatInstance: EmojiCompat?,
+    emojiFontSize: TextUnit,
     preferredSkinTone: EmojiSkinTone,
     isPinned: Boolean,
     isRecent: Boolean,
@@ -435,6 +444,7 @@ private fun EmojiKey(
             modifier = Modifier.align(Alignment.Center),
             text = base.value,
             emojiCompatInstance = emojiCompatInstance,
+            fontSize = emojiFontSize,
         )
         if (variations.isNotEmpty() || isPinned || isRecent) {
             val style = rememberSnyggThemeQuery(FlorisImeUi.MediaEmojiKeyPopupExtendedIndicator.elementName)

@@ -230,8 +230,15 @@ private fun computeTouchKeyboard(
             var currentY = 0f
             for (row in rows) {
                 val desiredWeightSum = 10f
-                val fullWeightSum = row.fold(0f) { acc, key -> acc + key.width.toFloat() }
-                val stretchWeightSum = row.fold(0f) { acc, key -> acc + (if (key.stretch) key.width.toFloat() else 0f) }
+                val weightOf = { key: K3Key ->
+                    if (key.output == ImeActions.Backspace) {
+                        key.width.toFloat() * options.deleteKeyWidthPercent / 100f
+                    } else {
+                        key.width.toFloat()
+                    }
+                }
+                val fullWeightSum = row.fold(0f) { acc, key -> acc + weightOf(key) }
+                val stretchWeightSum = row.fold(0f) { acc, key -> acc + (if (key.stretch) weightOf(key) else 0f) }
                 val nonStretchSum = fullWeightSum - stretchWeightSum
                 val mayGrowKeys = fullWeightSum <= desiredWeightSum
                 val mayStretchKeys = mayGrowKeys && stretchWeightSum != 0f
@@ -247,9 +254,9 @@ private fun computeTouchKeyboard(
                 val keyWidths = mutableListOf<Float>()
                 for (key in row) {
                     val keyWidthPx = when {
-                        mayStretchKeys && key.stretch -> desiredStretchKeyWidth * key.width.toFloat()
+                        mayStretchKeys && key.stretch -> desiredStretchKeyWidth * weightOf(key)
                             .roundToInt() / stretchWeightSum
-                        else -> desiredKeyWidth * key.width.toFloat()
+                        else -> desiredKeyWidth * weightOf(key)
                     }
                     keyWidths.add(keyWidthPx)
                     keyWidthSum += keyWidthPx

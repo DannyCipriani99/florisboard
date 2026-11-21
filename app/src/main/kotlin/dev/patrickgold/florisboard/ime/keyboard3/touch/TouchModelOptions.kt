@@ -28,6 +28,8 @@ data class TouchModelOptions(
     val multiTapHighlightEnabled: Boolean,
     val flickKeyHintEnabled: Boolean,
     val flickKeyHintPlacement: FlickKeyHintPlacement,
+    /** Width of the backspace key in percent of its layout-defined width (100 = unchanged). */
+    val deleteKeyWidthPercent: Int,
 ) {
     companion object {
         val Default = TouchModelOptions(
@@ -39,6 +41,7 @@ data class TouchModelOptions(
             multiTapHighlightEnabled = true,
             flickKeyHintEnabled = false,
             flickKeyHintPlacement = FlickKeyHintPlacement.CARDINAL,
+            deleteKeyWidthPercent = 100,
         )
     }
 }

@@ -63,7 +63,9 @@ configure<ApplicationExtension> {
     }
 
     defaultConfig {
-        applicationId = "dev.patrickgold.florisboard"
+        // Fork package name: lets this build be installed side by side with the official FlorisBoard.
+        // The code namespace (above) intentionally stays unchanged to keep the source tree untouched.
+        applicationId = "dev.dannycipriani.florisboard"
         minSdk = providers.gradleProperty("projectMinSdk").get().toInt()
         targetSdk = providers.gradleProperty("projectTargetSdk").get().toInt()
         versionCode = providers.gradleProperty("projectVersionCode").get().toInt()
