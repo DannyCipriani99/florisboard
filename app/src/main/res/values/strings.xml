@@ -437,6 +437,20 @@
     <string name="pref__keyboard__font_size_multiplier__label" comment="Preference title">Font size multiplier</string>
     <string name="pref__keyboard__landscape_input_ui_mode__label" comment="Preference value">Landscape fullscreen input</string>
     <string name="pref__keyboard__key_spacing__label" comment="Preference title">Key spacing factor</string>
+    <string name="settings__expander__title">Text expander</string>
+    <string name="settings__expander__add">Add expansion</string>
+    <string name="settings__expander__edit">Edit expansion</string>
+    <string name="settings__expander__rules_title">Expansions</string>
+    <string name="settings__expander__abbreviation">Abbreviation (no spaces)</string>
+    <string name="settings__expander__expansion">Replacement text</string>
+    <string name="settings__expander__clipboard_hint">Use {placeholder} to insert the current clipboard text. Leave empty to only send the broadcast.</string>
+    <string name="settings__expander__instant">Replace instantly (without pressing space)</string>
+    <string name="settings__expander__case_sensitive">Case sensitive</string>
+    <string name="settings__expander__broadcast">Send broadcast (Tasker / MacroDroid)</string>
+    <string name="settings__expander__broadcast_action">Broadcast action (optional)</string>
+    <string name="settings__expander__intent_hint">Tasker and MacroDroid can react to the intent \"{action}\" (extras: abbreviation, expansion)</string>
+    <string name="pref__expander__enabled__label">Enable text expander</string>
+    <string name="pref__expander__enabled__summary">Replace abbreviations while typing</string>
     <string name="pref__keyboard__delete_key_width__label" comment="Preference title">Delete key width</string>
     <string name="pref__keyboard__group_keypress__label" comment="Preference group title">Key press</string>
     <string name="pref__keyboard__popup_enabled__label" comment="Preference title">Popup visibility</string>

@@ -17,6 +17,8 @@ import dev.patrickgold.florisboard.ime.text.key.KeyCode
 
 package dev.patrickgold.florisboard.ime.keyboard3
 
+import android.content.Context
+import android.content.Intent
 import android.icu.text.BreakIterator
 import android.text.TextUtils
 import android.view.KeyEvent
@@ -31,6 +33,8 @@ import dev.patrickgold.florisboard.ime.clipboard.provider.ItemType
 import dev.patrickgold.florisboard.ime.editor.FlorisEditorInfo
 import dev.patrickgold.florisboard.ime.editor.ImeOptions
 import dev.patrickgold.florisboard.ime.editor.InputAttributes
+import dev.patrickgold.florisboard.ime.expander.TextExpander
+import dev.patrickgold.florisboard.ime.expander.TextExpansionMatch
 import dev.patrickgold.florisboard.ime.io.StorageController
 import dev.patrickgold.florisboard.ime.keyboard.IncognitoMode
 import dev.patrickgold.florisboard.ime.keyboard3.extension.loadFoundationKeyboard
@@ -85,6 +89,8 @@ class ImeController(
     val clipboardManager: ClipboardManager, // TODO ClipboardController
     initialState: ImeState = ImeState(),
     val touchModelCache: TouchModelCache = TouchModelCache(),
+    /** If null the text expander is disabled for this controller (e.g. the emoji search field). */
+    private val appContext: Context? = null,
 ) : K3InputMethod<ImeState, ImeEditor, ImeController.UpdateImeStateScope>(
     initialState = initialState,
 ) {
@@ -322,6 +328,47 @@ class ImeController(
             super.emitText(value)
             expectedContentQueue.push(state.content)
             reevaluateInputShiftState()
+            tryExpandText(value)
+        }
+
+        private var isExpandingText = false
+
+        /**
+         * Text expander hook: replaces a just-typed abbreviation by its expansion (on space or instantly).
+         */
+        private fun tryExpandText(typed: K3String) {
+            val context = appContext ?: return
+            if (isExpandingText || !prefs.expander.enabled.get()) return
+            val rules = prefs.expander.rules.get().rules
+            if (rules.isEmpty()) return
+            val textBefore = state.editor
+                .getSurroundingText(TextExpander.MAX_LOOKBEHIND, 0)
+                .textBefore.toString()
+            val match: TextExpansionMatch = (
+                if (typed == SPACE_SEQ) TextExpander.findOnSpace(rules, textBefore) else null
+                ) ?: TextExpander.findInstant(rules, textBefore) ?: return
+            val clipboardText = clipboardManager.primaryClip?.text
+            val expanded = TextExpander.resolve(match.rule, clipboardText)
+            isExpandingText = true
+            try {
+                state.editor.deleteSurroundingText(match.deleteLength, 0)
+                resetContent()
+                expectedContentQueue.push(state.content)
+                if (expanded.isNotEmpty()) {
+                    val suffix = if (match.keepTrailingSpace) " " else ""
+                    emitText((expanded + suffix).asK3String())
+                }
+            } finally {
+                isExpandingText = false
+            }
+            if (match.rule.broadcastEnabled) {
+                val action = match.rule.broadcastAction.ifBlank { TextExpander.DEFAULT_BROADCAST_ACTION }
+                context.sendBroadcast(
+                    Intent(action)
+                        .putExtra(TextExpander.EXTRA_ABBREVIATION, match.rule.abbreviation)
+                        .putExtra(TextExpander.EXTRA_EXPANSION, expanded)
+                )
+            }
         }
 
         override fun emitDescriptor(descriptor: K3Descriptor) {
@@ -654,6 +701,7 @@ class ImeController(
 
     companion object {
         private val NEWLINE_SEQ = "\n".asK3String()
+        private val SPACE_SEQ = " ".asK3String()
     }
 }
 

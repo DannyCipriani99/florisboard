@@ -18,6 +18,7 @@ package dev.patrickgold.florisboard.app.settings
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Assignment
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Gesture
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.SentimentSatisfiedAlt
@@ -99,7 +100,7 @@ fun HomeScreen() {
             }
 
             SegmentedListColumn {
-                val count = 4
+                val count = 5
                 Preference(
                     shapes = ListItemDefaults.segmentedShapes(0, count),
                     icon = Icons.Default.Spellcheck,
@@ -123,6 +124,12 @@ fun HomeScreen() {
                     icon = Icons.Default.SentimentSatisfiedAlt,
                     title = stringRes(R.string.settings__media__title),
                     onClick = { navController.navigate(Routes.Settings.Media) },
+                )
+                Preference(
+                    shapes = ListItemDefaults.segmentedShapes(4, count),
+                    icon = Icons.Default.Edit,
+                    title = stringRes(R.string.settings__expander__title),
+                    onClick = { navController.navigate(Routes.Settings.Expander) },
                 )
             }
 

@@ -33,6 +33,7 @@ import dev.patrickgold.florisboard.ime.keyboard.SpaceBarMode
 import dev.patrickgold.florisboard.ime.keyboard3.ImeActions
 import dev.patrickgold.florisboard.ime.keyboard3.interaction.InteractionTimingOptions
 import dev.patrickgold.florisboard.ime.keyboard3.touch.FnKeyAction
+import dev.patrickgold.florisboard.ime.expander.TextExpansionList
 import dev.patrickgold.florisboard.ime.keyboard3.touch.FnKeyArrangement
 import dev.patrickgold.florisboard.ime.keyboard3.touch.ShiftKeyBehavior
 import dev.patrickgold.florisboard.ime.keyboard3.touch.TouchModelOptions
@@ -212,6 +213,19 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val enableFlorisUserDictionary = boolean(
             key = "suggestion__enable_floris_user_dictionary",
             default = true,
+        )
+    }
+
+    val expander = Expander()
+    inner class Expander {
+        val enabled = boolean(
+            key = "expander__enabled",
+            default = false,
+        )
+        val rules = custom(
+            key = "expander__rules",
+            default = TextExpansionList(),
+            serializer = TextExpansionList.Serializer,
         )
     }
 
