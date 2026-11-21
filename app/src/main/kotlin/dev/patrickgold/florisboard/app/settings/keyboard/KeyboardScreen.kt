@@ -98,6 +98,14 @@ fun KeyboardScreen() = FlorisScreen {
             max = 150,
             stepIncrement = 5,
         )
+        DialogSliderPreference(
+            prefs.keyboard.deleteKeyWidthPercent,
+            title = stringRes(R.string.pref__keyboard__delete_key_width__label),
+            valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
+            min = 40,
+            max = 150,
+            stepIncrement = 5,
+        )
         ListPreference(
             listPref = prefs.keyboard.incognitoDisplayMode,
             title = stringRes(R.string.pref__keyboard__incognito_indicator__label),

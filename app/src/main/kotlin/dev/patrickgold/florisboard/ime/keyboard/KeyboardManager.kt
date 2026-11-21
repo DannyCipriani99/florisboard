@@ -17,6 +17,7 @@
 package dev.patrickgold.florisboard.ime.keyboard
 
 import android.content.Context
+import android.content.Intent
 import android.icu.lang.UCharacter
 import android.view.KeyEvent
 import android.widget.Toast
@@ -39,7 +40,9 @@ import dev.patrickgold.florisboard.ime.editor.EditorContent
 import dev.patrickgold.florisboard.ime.editor.FlorisEditorInfo
 import dev.patrickgold.florisboard.ime.editor.ImeOptions
 import dev.patrickgold.florisboard.ime.editor.InputAttributes
+import dev.patrickgold.florisboard.ime.editor.OperationScope
 import dev.patrickgold.florisboard.ime.editor.OperationUnit
+import dev.patrickgold.florisboard.ime.expander.TextExpander
 import dev.patrickgold.florisboard.ime.input.CapitalizationBehavior
 import dev.patrickgold.florisboard.ime.input.InputEventDispatcher
 import dev.patrickgold.florisboard.ime.input.InputKeyEventReceiver
@@ -161,6 +164,9 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
                 resetSuggestions(editorInstance.activeContent)
             }
             clipboardManager.primaryClipFlow.collectLatestIn(scope) {
+                updateActiveEvaluators()
+            }
+            prefs.keyboard.deleteKeyWidthPercent.asFlow().collectLatestIn(scope) {
                 updateActiveEvaluators()
             }
             editorInstance.activeContentFlow.collectIn(scope) { content ->
@@ -554,6 +560,11 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
      * enabled by the user.
      */
     private fun handleSpace(data: KeyData) {
+        // Text expander: replace a typed abbreviation by its expansion, then commit the space as usual.
+        if (tryExpandText(onSpace = true)) {
+            editorInstance.commitText(KeyCode.SPACE.toChar().toString())
+            return
+        }
         val candidate = nlpManager.getAutoCommitCandidate()
         candidate?.let { commitCandidate(it) }
         if (prefs.keyboard.spaceBarSwitchesToCharacters.get()) {
@@ -581,6 +592,46 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
                 candidate != null) { /* Do nothing */ } else {
             editorInstance.commitText(KeyCode.SPACE.toChar().toString())
         }
+    }
+
+    /**
+     * Text expander: if the text before the cursor ends with a configured abbreviation, it is replaced by the
+     * expansion (and an optional broadcast for Tasker / MacroDroid is sent).
+     *
+     * @param onSpace True if called because the user pressed space (the space is not committed yet), false if
+     *  called after a character was typed (only "instant" rules are considered).
+     *
+     * @return True if an abbreviation was replaced.
+     */
+    private fun tryExpandText(onSpace: Boolean): Boolean {
+        if (!prefs.expander.enabled.get()) return false
+        val rules = prefs.expander.rules.get().rules
+        if (rules.isEmpty()) return false
+        if (editorInstance.activeInfo.isRawInputEditor) return false
+        val textBefore = editorInstance.run { activeContent.getTextBeforeCursor(TextExpander.MAX_LOOKBEHIND) }
+        val match = if (onSpace) {
+            TextExpander.findOnSpace(rules, "$textBefore ")
+        } else {
+            TextExpander.findInstant(rules, textBefore)
+        } ?: return false
+        // findOnSpace counts the space that is not committed yet
+        val abbreviationLength = if (onSpace) match.deleteLength - 1 else match.deleteLength
+        val expanded = TextExpander.resolve(match.rule, clipboardManager.primaryClip?.text)
+        val selected = editorInstance.setSelectionSurrounding(
+            abbreviationLength, OperationUnit.CHARACTERS, OperationScope.BEFORE_CURSOR,
+        )
+        if (!selected) return false
+        // Replaces the selected abbreviation (an empty expansion just removes it)
+        editorInstance.commitText(expanded)
+        if (match.rule.broadcastEnabled) {
+            val action = match.rule.broadcastAction.ifBlank { TextExpander.DEFAULT_BROADCAST_ACTION }
+            appContext.sendBroadcast(
+                Intent(action)
+                    .putExtra(TextExpander.EXTRA_ABBREVIATION, match.rule.abbreviation)
+                    .putExtra(TextExpander.EXTRA_EXPANSION, expanded)
+            )
+        }
+        return true
     }
 
     /**
@@ -811,6 +862,7 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
                                 nlpManager.getAutoCommitCandidate()?.let { commitCandidate(it) }
                             }
                             editorInstance.commitChar(text)
+                            tryExpandText(onSpace = false)
                         }
                         else -> {
                             flogError(LogTopic.KEY_EVENTS) { "Received unknown key: $data" }

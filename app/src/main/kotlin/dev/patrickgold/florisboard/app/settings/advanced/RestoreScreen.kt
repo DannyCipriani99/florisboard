@@ -82,6 +82,7 @@ import org.florisboard.lib.kotlin.io.subFile
 object Restore {
     const val MIN_VERSION_CODE = 64
     const val PACKAGE_NAME = "dev.patrickgold.florisboard"
+    const val FORK_PACKAGE_NAME = "dev.dannycipriani.florisboard"
     const val BACKUP_ARCHIVE_FILE_NAME = "backup.zip"
 }
 
@@ -123,7 +124,8 @@ fun RestoreScreen() = FlorisScreen {
                     workspace.metadata.versionCode != BuildConfig.VERSION_CODE -> {
                         R.string.backup_and_restore__restore__metadata_warn_different_version
                     }
-                    !workspace.metadata.packageName.startsWith(Restore.PACKAGE_NAME) -> {
+                    !workspace.metadata.packageName.startsWith(Restore.PACKAGE_NAME) &&
+                        !workspace.metadata.packageName.startsWith(Restore.FORK_PACKAGE_NAME) -> {
                         R.string.backup_and_restore__restore__metadata_warn_different_vendor
                     }
                     else -> null

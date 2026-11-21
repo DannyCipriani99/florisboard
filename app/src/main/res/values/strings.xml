@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">FlorisBoard</string>
+    <string name="app_name">FlorisBoard Plus</string>
 
     <string name="key__phone_pause" comment="Label for the Pause key in the telephone keyboard layout">Pause</string>
     <string name="key__phone_wait" comment="Label for the Wait key in the telephone keyboard layout">Wait</string>
@@ -15,6 +15,9 @@
     <string name="media__tab__emojis" comment="Tab description for emojis in the media UI">Emojis</string>
     <string name="media__tab__emoticons" comment="Tab description for emoticons in the media UI">Emoticons</string>
     <string name="media__tab__kaomoji" comment="Tab description for kaomoji in the media UI">Kaomoji</string>
+    <string name="prefs__media__emoji_size">Emoji size</string>
+    <string name="prefs__media__emoji_grid_columns">Emoji grid columns</string>
+    <string name="prefs__media__emoji_grid_columns__auto">Automatic</string>
     <string name="prefs__media__emoji_preferred_skin_tone">Preferred emoji skin tone</string>
     <string name="prefs__media__emoji_preferred_hair_style">Preferred emoji hair style</string>
     <string name="prefs__media__emoji_history__title" comment="Preference group title">Emoji history</string>
@@ -445,6 +448,21 @@
     <string name="pref__keyboard__landscape_input_ui_mode__label" comment="Preference value">Landscape fullscreen input</string>
     <string name="pref__keyboard__height_factor__label" comment="Preference title">Keyboard height</string>
     <string name="pref__keyboard__key_spacing__label" comment="Preference title">Key spacing</string>
+    <string name="settings__expander__title">Text expander</string>
+    <string name="settings__expander__add">Add expansion</string>
+    <string name="settings__expander__edit">Edit expansion</string>
+    <string name="settings__expander__rules_title">Expansions</string>
+    <string name="settings__expander__abbreviation">Abbreviation (no spaces)</string>
+    <string name="settings__expander__expansion">Replacement text</string>
+    <string name="settings__expander__clipboard_hint">Use {placeholder} to insert the current clipboard text. Leave empty to only send the broadcast.</string>
+    <string name="settings__expander__instant">Replace instantly (without pressing space)</string>
+    <string name="settings__expander__case_sensitive">Case sensitive</string>
+    <string name="settings__expander__broadcast">Send broadcast (Tasker / MacroDroid)</string>
+    <string name="settings__expander__broadcast_action">Broadcast action (optional)</string>
+    <string name="settings__expander__intent_hint">Tasker and MacroDroid can react to the intent \"{action}\" (extras: abbreviation, expansion)</string>
+    <string name="pref__expander__enabled__label">Enable text expander</string>
+    <string name="pref__expander__enabled__summary">Replace abbreviations while typing</string>
+    <string name="pref__keyboard__delete_key_width__label" comment="Preference title">Delete key width</string>
     <string name="pref__keyboard__bottom_offset__label" comment="Preference title">Bottom offset</string>
     <string name="pref__keyboard__group_keypress__label" comment="Preference group title">Key press</string>
     <string name="pref__keyboard__popup_enabled__label" comment="Preference title">Popup Visibility</string>

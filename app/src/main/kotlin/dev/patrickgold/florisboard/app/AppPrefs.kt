@@ -34,6 +34,7 @@ import dev.patrickgold.florisboard.ime.input.InputFeedbackActivationMode
 import dev.patrickgold.florisboard.ime.keyboard.IncognitoMode
 import dev.patrickgold.florisboard.ime.keyboard.SpaceBarMode
 import dev.patrickgold.florisboard.ime.landscapeinput.LandscapeInputUiMode
+import dev.patrickgold.florisboard.ime.expander.TextExpansionList
 import dev.patrickgold.florisboard.ime.media.emoji.EmojiHairStyle
 import dev.patrickgold.florisboard.ime.media.emoji.EmojiHistory
 import dev.patrickgold.florisboard.ime.media.emoji.EmojiSkinTone
@@ -225,8 +226,31 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
     }
 
+    val expander = Expander()
+    inner class Expander {
+        val enabled = boolean(
+            key = "expander__enabled",
+            default = false,
+        )
+        val rules = custom(
+            key = "expander__rules",
+            default = TextExpansionList(),
+            serializer = TextExpansionList.Serializer,
+        )
+    }
+
     val emoji = Emoji()
     inner class Emoji {
+        /** Emoji size in percent of the default size (100 = default). */
+        val sizePercent = int(
+            key = "emoji__size_percent",
+            default = 100,
+        )
+        /** Number of grid columns in the emoji palette; 0 = automatic (as many as fit). */
+        val gridColumns = int(
+            key = "emoji__grid_columns",
+            default = 0,
+        )
         val preferredSkinTone = enum(
             key = "emoji__preferred_skin_tone",
             default = EmojiSkinTone.DEFAULT,
@@ -476,6 +500,11 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val numberRow = boolean(
             key = "keyboard__number_row",
             default = false,
+        )
+        /** Width of the backspace key in percent of its default width (100 = unchanged). */
+        val deleteKeyWidthPercent = int(
+            key = "keyboard__delete_key_width_percent",
+            default = 100,
         )
         val hintedNumberRowEnabled = boolean(
             key = "keyboard__hinted_number_row_enabled",

@@ -19,6 +19,7 @@ package dev.patrickgold.florisboard.app.settings
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Assignment
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Extension
 import androidx.compose.material.icons.filled.Gesture
 import androidx.compose.material.icons.filled.Language
@@ -144,6 +145,11 @@ fun HomeScreen() = FlorisScreen {
             icon = Icons.Default.SentimentSatisfiedAlt,
             title = stringRes(R.string.settings__media__title),
             onClick = { navController.navigate(Routes.Settings.Media) },
+        )
+        Preference(
+            icon = Icons.Default.Edit,
+            title = stringRes(R.string.settings__expander__title),
+            onClick = { navController.navigate(Routes.Settings.Expander) },
         )
         Preference(
             icon = Icons.Default.Extension,

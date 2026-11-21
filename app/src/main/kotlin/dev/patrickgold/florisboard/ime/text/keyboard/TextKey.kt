@@ -159,8 +159,11 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     else -> 1.56f
                 }
                 else -> when (computed.code) {
-                    KeyCode.SHIFT,
-                    KeyCode.DELETE -> 1.56f
+                    KeyCode.DELETE -> {
+                        val prefs by FlorisPreferenceStore
+                        1.56f * prefs.keyboard.deleteKeyWidthPercent.get() / 100f
+                    }
+                    KeyCode.SHIFT -> 1.56f
                     KeyCode.VIEW_CHARACTERS,
                     KeyCode.VIEW_SYMBOLS,
                     KeyCode.VIEW_SYMBOLS2,

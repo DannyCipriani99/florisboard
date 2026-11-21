@@ -67,7 +67,9 @@ android {
     }
 
     defaultConfig {
-        applicationId = "dev.patrickgold.florisboard"
+        // Fork package name: lets this build be installed side by side with the official FlorisBoard.
+        // The code namespace intentionally stays unchanged to keep the source tree untouched.
+        applicationId = "dev.dannycipriani.florisboard"
         minSdk = projectMinSdk.toInt()
         targetSdk = projectTargetSdk.toInt()
         versionCode = projectVersionCode.toInt()
