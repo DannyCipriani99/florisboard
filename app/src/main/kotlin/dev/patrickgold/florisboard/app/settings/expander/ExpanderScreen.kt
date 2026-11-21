@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
+import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.ime.expander.TextExpander
 import dev.patrickgold.florisboard.ime.expander.TextExpansion
 import dev.patrickgold.florisboard.ime.expander.TextExpansionList
@@ -56,6 +57,7 @@ fun ExpanderScreen() = FlorisScreen {
     title = stringRes(R.string.settings__expander__title)
     previewFieldVisible = true
 
+    val prefs by FlorisPreferenceStore
     val scope = rememberCoroutineScope()
     val ruleList by prefs.expander.rules.observeAsState()
     val rules = ruleList.rules
