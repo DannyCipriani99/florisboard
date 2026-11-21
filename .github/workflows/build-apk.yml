@@ -21,13 +21,26 @@ jobs:
           submodules: recursive
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: 17
           distribution: temurin
 
       - name: Set up CMake and Ninja
         uses: lukka/get-cmake@v4.0.2
+
+      # FlorisBoard v0.5.2 depends on the jetpref snapshot 20251119T222500Z-SNAPSHOT, which was deleted from the
+      # snapshot repository. Build the matching jetpref commit (22:24:31 UTC, "Update dependencies") from source.
+      - name: Build jetpref snapshot from source
+        run: |
+          git clone https://github.com/patrickgold/jetpref.git "$RUNNER_TEMP/jetpref"
+          cd "$RUNNER_TEMP/jetpref"
+          git checkout d6e12dda6517345dacc3682aa476a8448a71c34b
+          ./gradlew publishToMavenLocal \
+            -PprojectVersion=20251119T222500Z-SNAPSHOT \
+            -PRELEASE_SIGNING_ENABLED=false \
+            -PmavenCentralPublishing=false \
+            --no-daemon --stacktrace
 
       # Optional: keep the same signing key between builds so new APKs can be installed over old ones.
       # Add a repository secret named DEBUG_KEYSTORE_BASE64 (base64 of a debug.keystore file) to enable this.

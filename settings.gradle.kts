@@ -30,8 +30,9 @@ dependencyResolutionManagement {
         mavenCentral()
         // Uncomment the following if testing snapshots from Maven Central
         maven("https://central.sonatype.com/repository/maven-snapshots/")
-        // Uncomment the following if testing snapshots from Maven Local
-        // mavenLocal()
+        // Fork: the jetpref snapshot required by v0.5.2 no longer exists online, so the CI builds it from
+        // source and publishes it to Maven Local (see .github/workflows/build-apk.yml).
+        mavenLocal()
     }
 
     versionCatalogs {
