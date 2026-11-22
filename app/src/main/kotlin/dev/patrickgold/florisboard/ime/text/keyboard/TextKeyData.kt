@@ -152,6 +152,7 @@ data class TextKeyData(
                 TEXT_EXPANDER,
                 FIND_REPLACE,
                 LAYOUT_EDITOR,
+                CALCULATOR,
             )
         }
 
@@ -485,6 +486,20 @@ data class TextKeyData(
             type = KeyType.FUNCTION,
             code = KeyCode.LAYOUT_EDITOR,
             label = "layout_editor",
+        )
+
+        val CALCULATOR = TextKeyData(
+            type = KeyType.FUNCTION,
+            code = KeyCode.CALCULATOR,
+            label = "calculator",
+        )
+
+        /** Key data of a user-defined action: [id] is stored in the group id, [name] is shown on the button. */
+        fun customAction(id: Int, name: String) = TextKeyData(
+            type = KeyType.FUNCTION,
+            code = KeyCode.CUSTOM_ACTION,
+            label = name,
+            groupId = id,
         )
 
         /** Predefined key data for [KeyCode.IME_HIDE_UI] */

@@ -16,6 +16,7 @@
 
 package dev.patrickgold.florisboard.ime.expander
 
+import dev.patrickgold.florisboard.ime.additions.ActionTarget
 import dev.patrickgold.jetpref.datastore.model.PreferenceSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -37,6 +38,8 @@ data class TextExpansion(
     val broadcastEnabled: Boolean = false,
     /** Custom intent action for the broadcast; blank = [TextExpander.DEFAULT_BROADCAST_ACTION]. */
     val broadcastAction: String = "",
+    /** Optional app / activity / link / intent that is started when this rule fires. */
+    val target: ActionTarget = ActionTarget(),
 )
 
 @Serializable

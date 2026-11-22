@@ -77,7 +77,7 @@ fun QuickAction.keyData(): KeyData {
 @Composable
 fun QuickAction.computeDisplayName(evaluator: ComputingEvaluator): String {
     return when (this) {
-        is QuickAction.InsertKey -> stringRes(when (data.code) {
+        is QuickAction.InsertKey -> if (data.code == KeyCode.CUSTOM_ACTION) data.label else stringRes(when (data.code) {
             KeyCode.ARROW_UP -> R.string.quick_action__arrow_up
             KeyCode.ARROW_DOWN -> R.string.quick_action__arrow_down
             KeyCode.ARROW_LEFT -> R.string.quick_action__arrow_left
@@ -102,6 +102,7 @@ fun QuickAction.computeDisplayName(evaluator: ComputingEvaluator): String {
             KeyCode.TEXT_EXPANDER -> R.string.quick_action__text_expander
             KeyCode.FIND_REPLACE -> R.string.quick_action__find_replace
             KeyCode.LAYOUT_EDITOR -> R.string.quick_action__layout_editor
+            KeyCode.CALCULATOR -> R.string.quick_action__calculator
             // TODO: In the future this will be merged into the resize keyboard panel, for now it is a separate action
             KeyCode.TOGGLE_COMPACT_LAYOUT -> R.string.quick_action__one_handed_mode
             KeyCode.DRAG_MARKER -> if (evaluator.state.debugShowDragAndDropHelpers) {
@@ -119,7 +120,7 @@ fun QuickAction.computeDisplayName(evaluator: ComputingEvaluator): String {
 @Composable
 fun QuickAction.computeTooltip(evaluator: ComputingEvaluator): String {
     return when (this) {
-        is QuickAction.InsertKey -> stringRes(when (data.code) {
+        is QuickAction.InsertKey -> if (data.code == KeyCode.CUSTOM_ACTION) data.label else stringRes(when (data.code) {
             KeyCode.ARROW_UP -> R.string.quick_action__arrow_up__tooltip
             KeyCode.ARROW_DOWN -> R.string.quick_action__arrow_down__tooltip
             KeyCode.ARROW_LEFT -> R.string.quick_action__arrow_left__tooltip
@@ -143,6 +144,7 @@ fun QuickAction.computeTooltip(evaluator: ComputingEvaluator): String {
             KeyCode.TEXT_EXPANDER -> R.string.quick_action__text_expander__tooltip
             KeyCode.FIND_REPLACE -> R.string.quick_action__find_replace__tooltip
             KeyCode.LAYOUT_EDITOR -> R.string.quick_action__layout_editor__tooltip
+            KeyCode.CALCULATOR -> R.string.quick_action__calculator__tooltip
             // TODO: In the future this will be merged into the resize keyboard panel, for now it is a separate action
             KeyCode.TOGGLE_COMPACT_LAYOUT -> R.string.quick_action__one_handed_mode__tooltip
             KeyCode.DRAG_MARKER -> if (evaluator.state.debugShowDragAndDropHelpers) {

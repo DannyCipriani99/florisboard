@@ -70,6 +70,7 @@ fun AdditionsPanelHost() {
         AdditionsPanelKind.NONE -> Unit
         AdditionsPanelKind.FIND_REPLACE -> FindReplacePanel()
         AdditionsPanelKind.EXPANDER -> ExpanderPanel()
+        AdditionsPanelKind.CALCULATOR -> CalculatorPanel()
     }
 }
 
@@ -286,6 +287,79 @@ private fun ExpanderPanel() {
             if (p.status.isNotEmpty()) {
                 Text(p.status, color = Accent, fontSize = 13.sp, maxLines = 1)
             }
+        }
+    }
+}
+
+@Composable
+private fun CalculatorPanel() {
+    val prefs by FlorisPreferenceStore
+    val scope = rememberCoroutineScope()
+    val autoOnEquals by prefs.additions.calcAutoOnEquals.observeAsState()
+    val p = AdditionsPanel
+    val preview = p.calcPreview()
+    Column(
+        modifier = Modifier.fillMaxWidth().background(PanelBg).padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            VirtualField(
+                Modifier.weight(1f), stringResource(R.string.panel__calc_hint), p.expression, p.expressionCaret,
+                true, false, onFocus = { p.focus = PanelField.EXPRESSION }, onCaret = { p.expressionCaret = it },
+            )
+            Text(
+                if (preview != null) "= $preview" else p.status,
+                color = Accent,
+                fontSize = 18.sp,
+                maxLines = 1,
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            for (t in listOf("+", "−", "×", "÷", "^", "%", "(", ")", ".", "√", "π", "!")) {
+                Chip(t) { p.focus = PanelField.EXPRESSION; p.insertAtCaret(if (t == "√") "√(" else t) }
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            for (d in 0..9) {
+                Chip(d.toString()) { p.focus = PanelField.EXPRESSION; p.insertAtCaret(d.toString()) }
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Chip("⇠") { p.moveCaret(-1) }
+            Chip("⇢") { p.moveCaret(1) }
+            Chip("⌫") {
+                p.focus = PanelField.EXPRESSION
+                val c = p.expressionCaret.coerceIn(0, p.expression.length)
+                if (c > 0) {
+                    p.expression = p.expression.removeRange(c - 1, c)
+                    p.expressionCaret = c - 1
+                }
+            }
+            Chip("C") { p.calcClear() }
+            Chip("=") { p.calcEquals() }
+            Chip(stringResource(R.string.panel__calc_insert)) { p.insertResultIntoField() }
+            Chip(stringResource(R.string.panel__calc_insert_full)) { p.insertResultIntoField(withExpression = true) }
+            Chip(stringResource(R.string.panel__calc_scan)) { p.solveFieldText() }
+            Chip(stringResource(R.string.panel__calc_auto), autoOnEquals) {
+                scope.launch { prefs.additions.calcAutoOnEquals.set(!autoOnEquals) }
+            }
+            Chip("✕") { p.close() }
+            for (h in p.history) {
+                Chip(h) { p.focus = PanelField.EXPRESSION; p.insertAtCaret(h) }
+            }
+        }
+        if (p.status.isNotEmpty() && preview != null) {
+            Text(p.status, color = Accent, fontSize = 13.sp)
         }
     }
 }

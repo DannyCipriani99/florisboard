@@ -91,6 +91,7 @@ data class QuickActionArrangement(
                 QuickAction.InsertKey(TextKeyData.TEXT_EXPANDER),
                 QuickAction.InsertKey(TextKeyData.FIND_REPLACE),
                 QuickAction.InsertKey(TextKeyData.LAYOUT_EDITOR),
+                QuickAction.InsertKey(TextKeyData.CALCULATOR),
             ),
             hiddenActions = listOf(
             ),
@@ -105,7 +106,7 @@ data class QuickActionArrangement(
         override fun deserialize(value: String): QuickActionArrangement {
             val stored = QuickActionJsonConfig.decodeFromString<QuickActionArrangement>(value)
             // Make sure the added tools (text expander, find & replace, layout editor) show up for existing users.
-            val missing = listOf(TextKeyData.TEXT_EXPANDER, TextKeyData.FIND_REPLACE, TextKeyData.LAYOUT_EDITOR)
+            val missing = listOf(TextKeyData.TEXT_EXPANDER, TextKeyData.FIND_REPLACE, TextKeyData.LAYOUT_EDITOR, TextKeyData.CALCULATOR)
                 .map { QuickAction.InsertKey(it) }
                 .filter { it !in stored }
             return if (missing.isEmpty()) stored else stored.copy(dynamicActions = stored.dynamicActions + missing)

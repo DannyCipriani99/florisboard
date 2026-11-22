@@ -60,4 +60,37 @@
     <string name="panel__shortcuts">Shortcuts</string>
     <string name="panel__shortcuts_edit">Edit shortcuts</string>
     <string name="panel__field_expand">Expand field</string>
+
+    <string name="quick_action__calculator" comment="Please mind the limited available space for the quick action strings">Calc</string>
+    <string name="quick_action__calculator__tooltip">Calculator</string>
+    <string name="panel__calc_hint">Type a calculation, e.g. 12*(3+4)</string>
+    <string name="panel__calc_insert">Insert result</string>
+    <string name="panel__calc_insert_full">Insert as "a = b"</string>
+    <string name="panel__calc_scan">Solve field text</string>
+    <string name="panel__calc_auto">Auto "="</string>
+    <string name="settings__additions__calc_auto">Solve when typing "="</string>
+    <string name="settings__additions__calc_auto_summary">Typing "=" right after a math expression writes the result (e.g. 12*5= gives 60)</string>
+    <string name="settings__custom_actions__title">Custom smartbar actions</string>
+    <string name="settings__custom_actions__summary">Create your own toolbar buttons that open apps, activities, links or trigger MacroDroid / Tasker</string>
+    <string name="settings__custom_actions__add">Add action</string>
+    <string name="settings__custom_actions__name">Button text or emoji</string>
+    <string name="settings__custom_actions__name_hint">Shown on the toolbar button, keep it short, for example 🔦</string>
+    <string name="settings__target__title">What should happen</string>
+    <string name="settings__target__none">Nothing</string>
+    <string name="settings__target__app">Open app</string>
+    <string name="settings__target__activity">Open activity</string>
+    <string name="settings__target__uri">Open link / URI</string>
+    <string name="settings__target__action">Start intent action</string>
+    <string name="settings__target__broadcast">Send broadcast</string>
+    <string name="settings__target__text">Insert text</string>
+    <string name="settings__target__pick_app">Choose app</string>
+    <string name="settings__target__pick_activity">Choose activity</string>
+    <string name="settings__target__package">Package name</string>
+    <string name="settings__target__class">Activity class name</string>
+    <string name="settings__target__value_uri">URI (https://, tel:, geo: ...)</string>
+    <string name="settings__target__value_action">Intent action</string>
+    <string name="settings__target__value_text">Text</string>
+    <string name="settings__target__search">Search</string>
+    <string name="settings__target__test">Test</string>
+    <string name="settings__layout_editor__popup_grid_hint">Drag a character to another cell to reorder. Cells are shown like the real popup.</string>
 </resources>

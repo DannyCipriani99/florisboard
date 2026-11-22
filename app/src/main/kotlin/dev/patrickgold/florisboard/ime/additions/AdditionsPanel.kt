@@ -18,6 +18,7 @@ package dev.patrickgold.florisboard.ime.additions
 
 import android.view.inputmethod.ExtractedTextRequest
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import dev.patrickgold.florisboard.FlorisImeService
@@ -25,9 +26,9 @@ import dev.patrickgold.florisboard.ime.keyboard.KeyData
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 
-enum class AdditionsPanelKind { NONE, FIND_REPLACE, EXPANDER }
+enum class AdditionsPanelKind { NONE, FIND_REPLACE, EXPANDER, CALCULATOR }
 
-enum class PanelField { FIND, REPLACE, ABBREVIATION }
+enum class PanelField { FIND, REPLACE, ABBREVIATION, EXPRESSION }
 
 /**
  * State of the small tool panels shown between the smartbar and the keyboard (find & replace, text expander).
@@ -50,6 +51,10 @@ object AdditionsPanel {
     var findCaret by mutableStateOf(0)
     var replaceCaret by mutableStateOf(0)
     var abbreviationCaret by mutableStateOf(0)
+    var expression by mutableStateOf("")
+    var expressionCaret by mutableStateOf(0)
+    /** Previous calculator results, newest first. */
+    val history = mutableStateListOf<String>()
 
     /** Larger multi-line fields. */
     var expanded by mutableStateOf(false)
@@ -61,6 +66,7 @@ object AdditionsPanel {
         PanelField.FIND -> findCaret
         PanelField.REPLACE -> replaceCaret
         PanelField.ABBREVIATION -> abbreviationCaret
+        PanelField.EXPRESSION -> expressionCaret
     }
 
     private fun setCaret(field: PanelField, value: Int) {
@@ -68,6 +74,7 @@ object AdditionsPanel {
             PanelField.FIND -> findCaret = value
             PanelField.REPLACE -> replaceCaret = value
             PanelField.ABBREVIATION -> abbreviationCaret = value
+            PanelField.EXPRESSION -> expressionCaret = value
         }
     }
 
@@ -87,7 +94,11 @@ object AdditionsPanel {
         } else {
             kind = target
             status = ""
-            focus = if (target == AdditionsPanelKind.EXPANDER) PanelField.ABBREVIATION else PanelField.FIND
+            focus = when (target) {
+                AdditionsPanelKind.EXPANDER -> PanelField.ABBREVIATION
+                AdditionsPanelKind.CALCULATOR -> PanelField.EXPRESSION
+                else -> PanelField.FIND
+            }
         }
     }
 
@@ -101,6 +112,7 @@ object AdditionsPanel {
         PanelField.FIND -> find
         PanelField.REPLACE -> replace
         PanelField.ABBREVIATION -> abbreviation
+        PanelField.EXPRESSION -> expression
     }
 
     private fun setFocusedText(value: String) {
@@ -108,10 +120,11 @@ object AdditionsPanel {
             PanelField.FIND -> find = value
             PanelField.REPLACE -> replace = value
             PanelField.ABBREVIATION -> abbreviation = value
+            PanelField.EXPRESSION -> expression = value
         }
     }
 
-    private fun insertAtCaret(text: String) {
+    fun insertAtCaret(text: String) {
         val current = focusedText()
         val caret = caretOf(focus).coerceIn(0, current.length)
         setFocusedText(current.substring(0, caret) + text + current.substring(caret))
@@ -139,6 +152,7 @@ object AdditionsPanel {
             }
             data.code == KeyCode.ENTER -> {
                 if (kind == AdditionsPanelKind.FIND_REPLACE) findNext()
+                if (kind == AdditionsPanelKind.CALCULATOR) insertResultIntoField()
             }
             data.type == KeyType.CHARACTER || data.type == KeyType.NUMERIC -> {
                 val text = data.asString(isForDisplay = false)
@@ -241,6 +255,62 @@ object AdditionsPanel {
             regex.replace(field.text, replacementFor())
         } catch (e: Exception) {
             status = e.message ?: "error"
+            return
+        }
+        ic.beginBatchEdit()
+        ic.setSelection(0, field.text.length)
+        ic.commitText(newText, 1)
+        ic.endBatchEdit()
+        status = "✓ $count"
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------
+    // Calculator
+    // ---------------------------------------------------------------------------------------------------------------
+
+    /** Live result of the expression typed into the calculator, or null if it is incomplete / invalid. */
+    fun calcPreview(): String? {
+        val v = CalculatorEngine.evaluate(expression) ?: return null
+        val arabic = expression.any { it in '٠'..'٩' }
+        return CalculatorEngine.format(v, arabic)
+    }
+
+    /** Replaces the expression by its result so it can be used for the next calculation. */
+    fun calcEquals() {
+        val v = CalculatorEngine.evaluate(expression) ?: run { status = "?"; return }
+        val text = CalculatorEngine.format(v, expression.any { it in '٠'..'٩' })
+        CalculatorEngine.lastAnswer = v
+        history.add(0, text)
+        while (history.size > 6) history.removeAt(history.size - 1)
+        expression = text
+        expressionCaret = text.length
+        status = ""
+    }
+
+    fun calcClear() {
+        expression = ""
+        expressionCaret = 0
+        status = ""
+    }
+
+    /** Types the result into the edited field. [withExpression] writes `expr = result`. */
+    fun insertResultIntoField(withExpression: Boolean = false) {
+        val result = calcPreview() ?: run { status = "?"; return }
+        val ic = FlorisImeService.currentInputConnection() ?: return
+        CalculatorEngine.evaluate(expression)?.let { CalculatorEngine.lastAnswer = it }
+        history.add(0, result)
+        while (history.size > 6) history.removeAt(history.size - 1)
+        ic.commitText(if (withExpression) "${expression.trim()} = $result" else result, 1)
+        status = "✓"
+    }
+
+    /** Reads the whole edited field and fills in the result after every `expression =`. */
+    fun solveFieldText() {
+        val field = readField() ?: run { status = "-"; return }
+        val ic = FlorisImeService.currentInputConnection() ?: return
+        val (newText, count) = CalculatorEngine.solveAll(field.text)
+        if (count == 0) {
+            status = "0"
             return
         }
         ic.beginBatchEdit()

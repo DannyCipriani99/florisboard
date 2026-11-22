@@ -30,7 +30,10 @@ import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.appContext
 import dev.patrickgold.florisboard.ime.additions.AdditionsPanel
+import dev.patrickgold.florisboard.ime.additions.ActionRunner
+import dev.patrickgold.florisboard.ime.additions.CalculatorEngine
 import dev.patrickgold.florisboard.ime.additions.ModifierKeys
+import dev.patrickgold.florisboard.ime.additions.TargetType
 import dev.patrickgold.florisboard.ime.additions.AdditionsPanelKind
 import dev.patrickgold.florisboard.clipboardManager
 import dev.patrickgold.florisboard.editorInstance
@@ -639,7 +642,33 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
                     .putExtra(TextExpander.EXTRA_EXPANSION, expanded)
             )
         }
+        val target = match.rule.target
+        if (target.type == TargetType.TEXT) {
+            editorInstance.commitText(target.value)
+        } else if (target.type != TargetType.NONE) {
+            ActionRunner.run(appContext, target)
+        }
         return true
+    }
+
+    /** Runs the user-defined smartbar action with the given id. */
+    private fun runCustomAction(id: Int) {
+        val action = prefs.additions.customActions.get().find(id) ?: return
+        if (action.target.type == TargetType.TEXT) {
+            editorInstance.commitText(action.target.value)
+        } else {
+            ActionRunner.run(appContext, action.target)
+        }
+    }
+
+    /** Called after "=" was typed: solves the math expression in front of it, if there is one. */
+    private fun tryAutoCalculate() {
+        if (!prefs.additions.calcAutoOnEquals.get()) return
+        if (editorInstance.activeInfo.isRawInputEditor) return
+        val before = editorInstance.run { activeContent.getTextBeforeCursor(200) }
+        if (!before.endsWith("=")) return
+        val result = CalculatorEngine.solveTrailing(before.dropLast(1)) ?: return
+        editorInstance.commitText(result)
     }
 
     /**
@@ -805,6 +834,8 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
             KeyCode.ALT, KeyCode.ALT_LOCK -> ModifierKeys.alt = !ModifierKeys.alt
             KeyCode.TAB -> editorInstance.sendDownUpKeyEvent(android.view.KeyEvent.KEYCODE_TAB)
             KeyCode.ESCAPE -> editorInstance.sendDownUpKeyEvent(android.view.KeyEvent.KEYCODE_ESCAPE)
+            KeyCode.CUSTOM_ACTION -> runCustomAction((data as? TextKeyData)?.groupId ?: -1)
+            KeyCode.CALCULATOR -> AdditionsPanel.toggle(AdditionsPanelKind.CALCULATOR)
             KeyCode.TEXT_EXPANDER -> AdditionsPanel.toggle(AdditionsPanelKind.EXPANDER)
             KeyCode.FIND_REPLACE -> AdditionsPanel.toggle(AdditionsPanelKind.FIND_REPLACE)
             KeyCode.LAYOUT_EDITOR -> FlorisImeService.launchSettings("settings/layout-editor")
@@ -880,6 +911,7 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
                             }
                             if (!ModifierKeys.trySendShortcut(editorInstance, text)) {
                                 editorInstance.commitChar(text)
+                                if (text == "=") tryAutoCalculate()
                                 tryExpandText(onSpace = false)
                             }
                         }

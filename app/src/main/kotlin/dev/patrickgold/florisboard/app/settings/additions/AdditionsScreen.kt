@@ -125,6 +125,16 @@ fun AdditionsScreen() = FlorisScreen {
                 summary = stringRes(R.string.settings__additions__regex_summary),
             )
             Preference(
+                title = stringRes(R.string.settings__custom_actions__title),
+                summary = stringRes(R.string.settings__custom_actions__summary),
+                onClick = { navController.navigate(Routes.Settings.CustomActions) },
+            )
+            SwitchPreference(
+                prefs.additions.calcAutoOnEquals,
+                title = stringRes(R.string.settings__additions__calc_auto),
+                summary = stringRes(R.string.settings__additions__calc_auto_summary),
+            )
+            Preference(
                 title = stringRes(R.string.settings__additions__toolbar_tip),
                 summary = stringRes(R.string.settings__additions__toolbar_tip_summary),
                 onClick = { navController.navigate(Routes.Settings.Smartbar) },

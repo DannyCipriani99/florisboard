@@ -34,6 +34,7 @@ import dev.patrickgold.florisboard.ime.input.InputFeedbackActivationMode
 import dev.patrickgold.florisboard.ime.keyboard.IncognitoMode
 import dev.patrickgold.florisboard.ime.keyboard.SpaceBarMode
 import dev.patrickgold.florisboard.ime.landscapeinput.LandscapeInputUiMode
+import dev.patrickgold.florisboard.ime.additions.CustomActionList
 import dev.patrickgold.florisboard.ime.additions.LayoutEditList
 import dev.patrickgold.florisboard.ime.expander.TextExpansionList
 import dev.patrickgold.florisboard.ime.media.emoji.EmojiHairStyle
@@ -247,6 +248,16 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "additions__layout_edits",
             default = LayoutEditList(),
             serializer = LayoutEditList.Serializer,
+        )
+        val customActions = custom(
+            key = "additions__custom_actions",
+            default = CustomActionList(),
+            serializer = CustomActionList.Serializer,
+        )
+        /** Fill in the result when "=" is typed right after a math expression. */
+        val calcAutoOnEquals = boolean(
+            key = "additions__calc_auto_on_equals",
+            default = true,
         )
         val findReplaceRegex = boolean(
             key = "additions__find_replace_regex",

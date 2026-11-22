@@ -17,6 +17,8 @@
 package dev.patrickgold.florisboard.app.settings.expander
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +40,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.app.settings.additions.ActionTargetEditor
+import dev.patrickgold.florisboard.ime.additions.ActionTarget
+import dev.patrickgold.florisboard.ime.additions.TargetType
 import dev.patrickgold.florisboard.ime.expander.TextExpander
 import dev.patrickgold.florisboard.ime.expander.TextExpansion
 import dev.patrickgold.florisboard.ime.expander.TextExpansionList
@@ -135,9 +140,10 @@ private fun RuleDialog(
     var caseSensitive by remember { mutableStateOf(initial?.caseSensitive ?: true) }
     var broadcast by remember { mutableStateOf(initial?.broadcastEnabled ?: false) }
     var broadcastAction by remember { mutableStateOf(initial?.broadcastAction ?: "") }
+    var target by remember { mutableStateOf(initial?.target ?: ActionTarget()) }
 
     val abbreviationValid = abbreviation.isNotEmpty() && abbreviation.none { it.isWhitespace() }
-    val hasEffect = expansion.isNotEmpty() || broadcast
+    val hasEffect = expansion.isNotEmpty() || broadcast || target.type != TargetType.NONE
 
     JetPrefAlertDialog(
         title = stringRes(
@@ -154,13 +160,17 @@ private fun RuleDialog(
                     caseSensitive = caseSensitive,
                     broadcastEnabled = broadcast,
                     broadcastAction = broadcastAction.trim(),
+                    target = target,
                 )
             )
         },
         dismissLabel = stringRes(R.string.action__cancel),
         onDismiss = onDismiss,
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = abbreviation,
@@ -196,6 +206,7 @@ private fun RuleDialog(
                     placeholder = { Text(TextExpander.DEFAULT_BROADCAST_ACTION) },
                 )
             }
+            ActionTargetEditor(target = target, onChange = { target = it })
             if (onDelete != null) {
                 TextButton(
                     onClick = onDelete,

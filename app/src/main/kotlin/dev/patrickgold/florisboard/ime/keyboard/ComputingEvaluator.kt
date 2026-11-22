@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.material.icons.filled.ContentPasteGo
+import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Done
@@ -228,6 +229,9 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
         }
         KeyCode.LAYOUT_EDITOR -> {
             Icons.Default.Tune
+        }
+        KeyCode.CALCULATOR -> {
+            Icons.Default.Calculate
         }
         KeyCode.DELETE -> {
             Icons.AutoMirrored.Outlined.Backspace

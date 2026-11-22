@@ -60,4 +60,37 @@
     <string name="panel__shortcuts">الاختصارات</string>
     <string name="panel__shortcuts_edit">تعديل الاختصارات</string>
     <string name="panel__field_expand">توسيع الحقل</string>
+
+    <string name="quick_action__calculator">حاسبة</string>
+    <string name="quick_action__calculator__tooltip">الآلة الحاسبة</string>
+    <string name="panel__calc_hint">اكتب عملية مثل 12*(3+4)</string>
+    <string name="panel__calc_insert">إدراج الناتج</string>
+    <string name="panel__calc_insert_full">إدراج "أ = ب"</string>
+    <string name="panel__calc_scan">حل نص الحقل</string>
+    <string name="panel__calc_auto">"=" تلقائي</string>
+    <string name="settings__additions__calc_auto">الحل عند كتابة "="</string>
+    <string name="settings__additions__calc_auto_summary">كتابة "=" بعد عملية حسابية تضع الناتج تلقائياً (مثال: 12*5= تعطي 60)</string>
+    <string name="settings__custom_actions__title">إجراءات مخصصة في الشريط العلوي</string>
+    <string name="settings__custom_actions__summary">أنشئ أزرارك الخاصة لفتح تطبيقات وأنشطة وروابط أو لتشغيل MacroDroid / Tasker</string>
+    <string name="settings__custom_actions__add">إضافة إجراء</string>
+    <string name="settings__custom_actions__name">نص الزر أو إيموجي</string>
+    <string name="settings__custom_actions__name_hint">يظهر على زر الشريط، اجعله قصيراً مثل 🔦</string>
+    <string name="settings__target__title">ماذا يحدث</string>
+    <string name="settings__target__none">لا شيء</string>
+    <string name="settings__target__app">فتح تطبيق</string>
+    <string name="settings__target__activity">فتح نشاط (Activity)</string>
+    <string name="settings__target__uri">فتح رابط / URI</string>
+    <string name="settings__target__action">تشغيل Intent Action</string>
+    <string name="settings__target__broadcast">إرسال Broadcast</string>
+    <string name="settings__target__text">إدراج نص</string>
+    <string name="settings__target__pick_app">اختيار تطبيق</string>
+    <string name="settings__target__pick_activity">اختيار نشاط</string>
+    <string name="settings__target__package">اسم الحزمة</string>
+    <string name="settings__target__class">اسم صنف النشاط</string>
+    <string name="settings__target__value_uri">URI (https://, tel:, geo: ...)</string>
+    <string name="settings__target__value_action">Intent Action</string>
+    <string name="settings__target__value_text">النص</string>
+    <string name="settings__target__search">بحث</string>
+    <string name="settings__target__test">تجربة</string>
+    <string name="settings__layout_editor__popup_grid_hint">اسحب الحرف إلى خانة أخرى لإعادة ترتيبه. الخانات معروضة مثل النافذة الفعلية.</string>
 </resources>

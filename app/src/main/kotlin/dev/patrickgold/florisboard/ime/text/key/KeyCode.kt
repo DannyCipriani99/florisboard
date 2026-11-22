@@ -111,6 +111,8 @@ object KeyCode {
     const val TEXT_EXPANDER =               -261
     const val FIND_REPLACE =                -262
     const val LAYOUT_EDITOR =               -263
+    const val CUSTOM_ACTION =               -264
+    const val CALCULATOR =                  -265
 
     const val URI_COMPONENT_TLD =           -255
 
