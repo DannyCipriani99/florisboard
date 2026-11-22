@@ -45,6 +45,8 @@ object AdditionsPanel {
     var abbreviation by mutableStateOf("")
     var useRegex by mutableStateOf(false)
     var caseSensitive by mutableStateOf(false)
+    /** Regex mode: "." also matches line breaks. */
+    var dotAll by mutableStateOf(false)
     var status by mutableStateOf("")
 
     /** Caret positions (index in the text) of the virtual fields. */
@@ -189,8 +191,16 @@ object AdditionsPanel {
     private fun buildRegex(): Regex? {
         if (find.isEmpty()) return null
         return try {
-            val options = if (caseSensitive) emptySet() else setOf(RegexOption.IGNORE_CASE)
-            if (useRegex) Regex(find, options) else Regex(Regex.escape(find), options)
+            val options = mutableSetOf<RegexOption>()
+            if (!caseSensitive) options += RegexOption.IGNORE_CASE
+            if (useRegex) {
+                // ^ and $ match at every line, so multi-line text can be searched line by line
+                options += RegexOption.MULTILINE
+                if (dotAll) options += RegexOption.DOT_MATCHES_ALL
+                Regex(find, options)
+            } else {
+                Regex(Regex.escape(find.replace("\\n", "\n")), options)
+            }
         } catch (e: Exception) {
             status = "Regex: ${e.message?.lineSequence()?.firstOrNull() ?: "invalid"}"
             null
@@ -199,7 +209,9 @@ object AdditionsPanel {
 
     private fun replacementFor(): String {
         // In regex mode `$1` style group references work, in plain mode the replacement is used literally.
-        return if (useRegex) replace else replace.replace("\\", "\\\\").replace("$", "\\$")
+        // "\n" in the replacement field becomes a line break
+        val text = replace.replace("\\n", "\n")
+        return if (useRegex) text else text.replace("\\", "\\\\").replace("$", "\\$")
     }
 
     fun findNext(forward: Boolean = true) {

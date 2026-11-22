@@ -99,11 +99,12 @@ private fun VirtualField(
     onFocus: () -> Unit,
     onCaret: (Int) -> Unit = {},
 ) {
+    val display = value.replace('\n', '↵')
     val shown = if (focused) {
-        val c = caret.coerceIn(0, value.length)
-        value.substring(0, c) + "|" + value.substring(c)
+        val c = caret.coerceIn(0, display.length)
+        display.substring(0, c) + "|" + display.substring(c)
     } else {
-        value
+        display
     }
     Box(
         modifier = modifier
@@ -175,7 +176,9 @@ private fun FindReplacePanel() {
             Chip("Aa", p.caseSensitive) { p.caseSensitive = !p.caseSensitive }
             if (regexAllowed) {
                 Chip(".*", p.useRegex) { p.useRegex = !p.useRegex }
+                if (p.useRegex) Chip("s", p.dotAll) { p.dotAll = !p.dotAll }
             }
+            Chip("↵") { p.insertAtCaret("\n") }
             Chip("◀") { p.findNext(forward = false) }
             Chip("▶") { p.findNext() }
             Chip(stringResource(R.string.panel__replace)) { p.replaceCurrent() }

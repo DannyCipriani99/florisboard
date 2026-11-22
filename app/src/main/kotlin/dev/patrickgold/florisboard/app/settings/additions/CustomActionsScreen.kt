@@ -137,10 +137,7 @@ fun CustomActionsScreen() = FlorisScreen {
                 dismissLabel = stringRes(R.string.action__cancel),
                 onDismiss = { editing = null },
             ) {
-                Column(
-                    modifier = Modifier.verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
                         value = name,

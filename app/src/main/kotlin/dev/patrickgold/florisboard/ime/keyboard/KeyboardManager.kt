@@ -616,8 +616,9 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
      */
     private fun tryExpandText(onSpace: Boolean): Boolean {
         if (!prefs.expander.enabled.get()) return false
+        // Only rules of the matching kind can fire, skip the (costly) text inspection if there are none.
         val rules = prefs.expander.rules.get().rules
-        if (rules.isEmpty()) return false
+        if (rules.none { it.instant == !onSpace }) return false
         if (editorInstance.activeInfo.isRawInputEditor) return false
         val textBefore = editorInstance.run { activeContent.getTextBeforeCursor(TextExpander.MAX_LOOKBEHIND) }
         val match = if (onSpace) {

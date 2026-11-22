@@ -167,10 +167,7 @@ private fun RuleDialog(
         dismissLabel = stringRes(R.string.action__cancel),
         onDismiss = onDismiss,
     ) {
-        Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = abbreviation,
