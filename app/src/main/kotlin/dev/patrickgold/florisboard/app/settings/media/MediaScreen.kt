@@ -63,24 +63,6 @@ fun MediaScreen() = FlorisScreen {
             title = stringRes(R.string.prefs__media__emoji_preferred_skin_tone),
             entries = enumDisplayEntriesOf(EmojiSkinTone::class),
         )
-        DialogSliderPreference(
-            prefs.emoji.sizePercent,
-            title = stringRes(R.string.prefs__media__emoji_size),
-            valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
-            min = 60,
-            max = 250,
-            stepIncrement = 5,
-        )
-        DialogSliderPreference(
-            prefs.emoji.gridColumns,
-            title = stringRes(R.string.prefs__media__emoji_grid_columns),
-            valueLabel = {
-                if (it == 0) stringRes(R.string.prefs__media__emoji_grid_columns__auto) else it.toString()
-            },
-            min = 0,
-            max = 12,
-            stepIncrement = 1,
-        )
 
         PreferenceGroup(title = stringRes(R.string.prefs__media__emoji_history__title)) {
             SwitchPreference(

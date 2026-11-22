@@ -34,6 +34,7 @@ import dev.patrickgold.florisboard.ime.input.InputFeedbackActivationMode
 import dev.patrickgold.florisboard.ime.keyboard.IncognitoMode
 import dev.patrickgold.florisboard.ime.keyboard.SpaceBarMode
 import dev.patrickgold.florisboard.ime.landscapeinput.LandscapeInputUiMode
+import dev.patrickgold.florisboard.ime.additions.LayoutEditList
 import dev.patrickgold.florisboard.ime.expander.TextExpansionList
 import dev.patrickgold.florisboard.ime.media.emoji.EmojiHairStyle
 import dev.patrickgold.florisboard.ime.media.emoji.EmojiHistory
@@ -236,6 +237,48 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "expander__rules",
             default = TextExpansionList(),
             serializer = TextExpansionList.Serializer,
+        )
+    }
+
+    val additions = Additions()
+    inner class Additions {
+        /** Manual layout edits (move / add / delete keys, custom popups). */
+        val layoutEdits = custom(
+            key = "additions__layout_edits",
+            default = LayoutEditList(),
+            serializer = LayoutEditList.Serializer,
+        )
+        val findReplaceRegex = boolean(
+            key = "additions__find_replace_regex",
+            default = false,
+        )
+        val findReplaceCaseSensitive = boolean(
+            key = "additions__find_replace_case_sensitive",
+            default = false,
+        )
+        /** 0 = none, 1 = image / GIF, 2 = video. */
+        val backgroundType = int(
+            key = "additions__background_type",
+            default = 0,
+        )
+        /** Absolute path of the copied background file inside the app's private storage. */
+        val backgroundPath = string(
+            key = "additions__background_path",
+            default = "",
+        )
+        /** Dark overlay strength in percent. */
+        val backgroundDim = int(
+            key = "additions__background_dim",
+            default = 30,
+        )
+        /** Tint overlay color (ARGB int, 0 = disabled). */
+        val backgroundTint = int(
+            key = "additions__background_tint",
+            default = 0,
+        )
+        val backgroundTintAlpha = int(
+            key = "additions__background_tint_alpha",
+            default = 30,
         )
     }
 

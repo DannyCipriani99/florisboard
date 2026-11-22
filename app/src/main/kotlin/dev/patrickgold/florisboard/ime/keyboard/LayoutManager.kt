@@ -20,6 +20,7 @@ import android.content.Context
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.appContext
 import dev.patrickgold.florisboard.extensionManager
+import dev.patrickgold.florisboard.ime.additions.LayoutEditor
 import dev.patrickgold.florisboard.ime.core.Subtype
 import dev.patrickgold.florisboard.ime.popup.PopupMapping
 import dev.patrickgold.florisboard.ime.popup.PopupMappingComponent
@@ -285,7 +286,10 @@ class LayoutManager(context: Context) {
             }
         }
 
-        val array = Array(computedArrangement.size) { computedArrangement[it] }
+        val editedArrangement = LayoutEditor.apply(
+            keyboardMode, computedArrangement, prefs.additions.layoutEdits.get().edits,
+        )
+        val array = Array(editedArrangement.size) { editedArrangement[it] }
         return TextKeyboard(
             arrangement = array,
             mode = keyboardMode,

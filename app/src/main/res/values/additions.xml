@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings__additions__title">New additions</string>
+    <string name="settings__additions__summary">Text expander, find &amp; replace, layout editor, background, emoji and more</string>
+    <string name="settings__additions__group_tools">Tools</string>
+    <string name="settings__additions__group_layout">Keys and layout</string>
+    <string name="settings__additions__group_emoji">Emoji</string>
+    <string name="settings__additions__group_background">Background and colors</string>
+    <string name="settings__additions__expander_summary">Abbreviations that expand into text, clipboard text and Tasker / MacroDroid broadcasts</string>
+    <string name="settings__additions__regex">Regex in find &amp; replace</string>
+    <string name="settings__additions__regex_summary">Optional. Shows a regular expression toggle in the find &amp; replace panel</string>
+    <string name="settings__additions__toolbar_tip">Toolbar buttons</string>
+    <string name="settings__additions__toolbar_tip_summary">Text expander, find &amp; replace and layout editor are available as smartbar actions. Open the actions editor to place them</string>
+    <string name="settings__additions__background_pick">Choose image, GIF or video</string>
+    <string name="settings__additions__background_none">No background</string>
+    <string name="settings__additions__background_image">Image / GIF background active</string>
+    <string name="settings__additions__background_video">Video background active</string>
+    <string name="settings__additions__background_remove">Remove background</string>
+    <string name="settings__additions__background_dim">Background dimming</string>
+    <string name="settings__additions__background_tint">Tint color</string>
+    <string name="settings__additions__background_tint_alpha">Tint strength</string>
+    <string name="settings__additions__theme_colors">Theme colors</string>
+    <string name="settings__additions__theme_colors_summary">Change key, text and keyboard colors in the theme editor</string>
+
+    <string name="settings__layout_editor__title">Layout editor</string>
+    <string name="settings__layout_editor__summary">Move, add or delete keys and set custom long-press popups</string>
+    <string name="settings__layout_editor__hint">Tap a key to move or delete it or to set its long-press popup characters. Use + at the end of a row to add a key, for example "00".</string>
+    <string name="settings__layout_editor__mode_letters">Letters</string>
+    <string name="settings__layout_editor__mode_symbols">Symbols</string>
+    <string name="settings__layout_editor__mode_symbols2">Symbols 2</string>
+    <string name="settings__layout_editor__undo">Undo last change</string>
+    <string name="settings__layout_editor__reset">Reset layout</string>
+    <string name="settings__layout_editor__key_title">Key {key}</string>
+    <string name="settings__layout_editor__popups">Long-press popup characters</string>
+    <string name="settings__layout_editor__popups_hint">Separated by spaces. Leave empty to keep the current popups</string>
+    <string name="settings__layout_editor__add_title">Add key</string>
+    <string name="settings__layout_editor__add_text">Key text</string>
+    <string name="settings__layout_editor__add_text_hint">One character or several, for example 00</string>
+
+    <string name="quick_action__text_expander" comment="Please mind the limited available space for the quick action strings">Expander</string>
+    <string name="quick_action__text_expander__tooltip">Open text expander</string>
+    <string name="quick_action__find_replace" comment="Please mind the limited available space for the quick action strings">Find</string>
+    <string name="quick_action__find_replace__tooltip">Find and replace</string>
+    <string name="quick_action__layout_editor" comment="Please mind the limited available space for the quick action strings">Layout</string>
+    <string name="quick_action__layout_editor__tooltip">Edit keyboard layout</string>
+
+    <string name="panel__find_hint">Find</string>
+    <string name="panel__replace_hint">Replace with</string>
+    <string name="panel__replace">Replace</string>
+    <string name="panel__replace_all">All</string>
+    <string name="panel__expander_on">Expander on</string>
+    <string name="panel__expander_off">Expander off</string>
+    <string name="panel__new_abbreviation">New abbreviation</string>
+    <string name="panel__save_from_clipboard">Save clipboard</string>
+</resources>

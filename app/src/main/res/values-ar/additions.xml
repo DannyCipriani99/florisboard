@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings__additions__title">إضافات جديدة</string>
+    <string name="settings__additions__summary">موسّع النص، البحث والاستبدال، محرر التخطيط، الخلفية، الرموز التعبيرية وغيرها</string>
+    <string name="settings__additions__group_tools">الأدوات</string>
+    <string name="settings__additions__group_layout">الأزرار والتخطيط</string>
+    <string name="settings__additions__group_emoji">الرموز التعبيرية</string>
+    <string name="settings__additions__group_background">الخلفية والألوان</string>
+    <string name="settings__additions__expander_summary">اختصارات تتحول إلى نص، نص من الحافظة، وربط مع Tasker / MacroDroid</string>
+    <string name="settings__additions__regex">Regex في البحث والاستبدال</string>
+    <string name="settings__additions__regex_summary">اختياري. يُظهر زر التعابير النمطية في لوحة البحث والاستبدال</string>
+    <string name="settings__additions__toolbar_tip">أزرار الشريط العلوي</string>
+    <string name="settings__additions__toolbar_tip_summary">موسّع النص والبحث والاستبدال ومحرر التخطيط متاحة كإجراءات في الشريط العلوي. افتح محرر الإجراءات لترتيبها</string>
+    <string name="settings__additions__background_pick">اختيار صورة أو GIF أو فيديو</string>
+    <string name="settings__additions__background_none">بدون خلفية</string>
+    <string name="settings__additions__background_image">خلفية صورة / GIF مفعّلة</string>
+    <string name="settings__additions__background_video">خلفية فيديو مفعّلة</string>
+    <string name="settings__additions__background_remove">إزالة الخلفية</string>
+    <string name="settings__additions__background_dim">تعتيم الخلفية</string>
+    <string name="settings__additions__background_tint">لون التظليل</string>
+    <string name="settings__additions__background_tint_alpha">قوة التظليل</string>
+    <string name="settings__additions__theme_colors">ألوان السمة</string>
+    <string name="settings__additions__theme_colors_summary">غيّر ألوان الأزرار والنص واللوحة من محرر السمة</string>
+
+    <string name="settings__layout_editor__title">محرر التخطيط</string>
+    <string name="settings__layout_editor__summary">انقل الأزرار أو أضفها أو احذفها وحدد النوافذ المنبثقة عند الضغط المطول</string>
+    <string name="settings__layout_editor__hint">اضغط على زر لنقله أو حذفه أو لتحديد أحرف النافذة المنبثقة عند الضغط المطول. استخدم + في نهاية الصف لإضافة زر مثل "00".</string>
+    <string name="settings__layout_editor__mode_letters">الحروف</string>
+    <string name="settings__layout_editor__mode_symbols">الرموز</string>
+    <string name="settings__layout_editor__mode_symbols2">الرموز 2</string>
+    <string name="settings__layout_editor__undo">تراجع عن آخر تغيير</string>
+    <string name="settings__layout_editor__reset">إعادة ضبط التخطيط</string>
+    <string name="settings__layout_editor__key_title">الزر {key}</string>
+    <string name="settings__layout_editor__popups">أحرف النافذة المنبثقة (ضغط مطول)</string>
+    <string name="settings__layout_editor__popups_hint">افصل بينها بمسافة. اتركه فارغاً للإبقاء على الحالي</string>
+    <string name="settings__layout_editor__add_title">إضافة زر</string>
+    <string name="settings__layout_editor__add_text">نص الزر</string>
+    <string name="settings__layout_editor__add_text_hint">حرف واحد أو عدة أحرف، مثل 00</string>
+
+    <string name="quick_action__text_expander">موسّع</string>
+    <string name="quick_action__text_expander__tooltip">فتح موسّع النص</string>
+    <string name="quick_action__find_replace">بحث</string>
+    <string name="quick_action__find_replace__tooltip">بحث واستبدال</string>
+    <string name="quick_action__layout_editor">تخطيط</string>
+    <string name="quick_action__layout_editor__tooltip">تعديل تخطيط اللوحة</string>
+
+    <string name="panel__find_hint">بحث</string>
+    <string name="panel__replace_hint">استبدال بـ</string>
+    <string name="panel__replace">استبدال</string>
+    <string name="panel__replace_all">الكل</string>
+    <string name="panel__expander_on">الموسّع مفعّل</string>
+    <string name="panel__expander_off">الموسّع متوقف</string>
+    <string name="panel__new_abbreviation">اختصار جديد</string>
+    <string name="panel__save_from_clipboard">حفظ الحافظة</string>
+</resources>

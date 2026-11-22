@@ -29,6 +29,8 @@ import dev.patrickgold.florisboard.FlorisImeService
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.appContext
+import dev.patrickgold.florisboard.ime.additions.AdditionsPanel
+import dev.patrickgold.florisboard.ime.additions.AdditionsPanelKind
 import dev.patrickgold.florisboard.clipboardManager
 import dev.patrickgold.florisboard.editorInstance
 import dev.patrickgold.florisboard.extensionManager
@@ -137,6 +139,11 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
             prefs.keyboard.numberRow.asFlow().collectLatestIn(scope) {
                 updateActiveEvaluators {
                     keyboardCache.clear(KeyboardMode.CHARACTERS)
+                }
+            }
+            prefs.additions.layoutEdits.asFlow().collectLatestIn(scope) {
+                updateActiveEvaluators {
+                    keyboardCache.clear()
                 }
             }
             prefs.keyboard.hintedNumberRowEnabled.asFlow().collectLatestIn(scope) {
@@ -745,6 +752,8 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
     }
 
     override fun onInputKeyUp(data: KeyData) = activeState.batchEdit {
+        // Tool panels (find & replace, text expander) consume typed keys while they are open.
+        if (AdditionsPanel.captureKey(data)) return@batchEdit
         when (data.code) {
             KeyCode.ARROW_DOWN,
             KeyCode.ARROW_LEFT,
@@ -791,6 +800,9 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
             KeyCode.FORWARD_DELETE_WORD -> handleForwardDelete(OperationUnit.WORDS)
             KeyCode.IME_SHOW_UI -> FlorisImeService.showUi()
             KeyCode.IME_HIDE_UI -> FlorisImeService.hideUi()
+            KeyCode.TEXT_EXPANDER -> AdditionsPanel.toggle(AdditionsPanelKind.EXPANDER)
+            KeyCode.FIND_REPLACE -> AdditionsPanel.toggle(AdditionsPanelKind.FIND_REPLACE)
+            KeyCode.LAYOUT_EDITOR -> FlorisImeService.launchSettings("settings/layout-editor")
             KeyCode.IME_PREV_SUBTYPE -> subtypeManager.switchToPrevSubtype()
             KeyCode.IME_NEXT_SUBTYPE -> subtypeManager.switchToNextSubtype()
             KeyCode.IME_UI_MODE_TEXT -> activeState.imeUiMode = ImeUiMode.TEXT

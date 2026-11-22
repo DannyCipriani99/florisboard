@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.material.icons.filled.ContentPasteGo
 import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.FontDownload
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -46,6 +47,7 @@ import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.SentimentSatisfiedAlt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SpaceBar
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.ui.graphics.vector.ImageVector
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.ime.core.DisplayLanguageNamesIn
@@ -217,6 +219,15 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
         }
         KeyCode.IME_HIDE_UI -> {
             Icons.Default.KeyboardHide
+        }
+        KeyCode.TEXT_EXPANDER -> {
+            Icons.Default.Edit
+        }
+        KeyCode.FIND_REPLACE -> {
+            Icons.Default.Search
+        }
+        KeyCode.LAYOUT_EDITOR -> {
+            Icons.Default.Tune
         }
         KeyCode.DELETE -> {
             Icons.AutoMirrored.Outlined.Backspace

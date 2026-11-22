@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.ime.additions.AdditionsPanelHost
 import dev.patrickgold.florisboard.ime.smartbar.IncognitoDisplayMode
 import dev.patrickgold.florisboard.ime.smartbar.InlineSuggestionsStyleCache
 import dev.patrickgold.florisboard.ime.smartbar.Smartbar
@@ -63,6 +64,7 @@ fun TextInputLayout(
                 .wrapContentHeight(),
         ) {
             Smartbar()
+            AdditionsPanelHost()
             if (state.isActionsOverflowVisible) {
                 QuickActionsOverflowPanel()
             } else {

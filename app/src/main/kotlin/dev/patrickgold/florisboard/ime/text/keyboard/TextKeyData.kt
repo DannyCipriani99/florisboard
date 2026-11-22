@@ -149,6 +149,9 @@ data class TextKeyData(
                 TOGGLE_ACTIONS_EDITOR,
                 TOGGLE_INCOGNITO_MODE,
                 TOGGLE_AUTOCORRECT,
+                TEXT_EXPANDER,
+                FIND_REPLACE,
+                LAYOUT_EDITOR,
             )
         }
 
@@ -468,6 +471,22 @@ data class TextKeyData(
             code = KeyCode.IME_SHOW_UI,
             label = "ime_show_ui",
         )
+        val TEXT_EXPANDER = TextKeyData(
+            type = KeyType.FUNCTION,
+            code = KeyCode.TEXT_EXPANDER,
+            label = "text_expander",
+        )
+        val FIND_REPLACE = TextKeyData(
+            type = KeyType.FUNCTION,
+            code = KeyCode.FIND_REPLACE,
+            label = "find_replace",
+        )
+        val LAYOUT_EDITOR = TextKeyData(
+            type = KeyType.FUNCTION,
+            code = KeyCode.LAYOUT_EDITOR,
+            label = "layout_editor",
+        )
+
         /** Predefined key data for [KeyCode.IME_HIDE_UI] */
         val IME_HIDE_UI = TextKeyData(
             type = KeyType.FUNCTION,

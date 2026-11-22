@@ -85,6 +85,7 @@ import dev.patrickgold.florisboard.ime.editor.EditorRange
 import dev.patrickgold.florisboard.ime.editor.FlorisEditorInfo
 import dev.patrickgold.florisboard.ime.input.InputFeedbackController
 import dev.patrickgold.florisboard.ime.input.LocalInputFeedbackController
+import dev.patrickgold.florisboard.ime.additions.KeyboardBackgroundLayer
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
 import dev.patrickgold.florisboard.ime.keyboard.ProvideKeyboardRowBaseHeight
 import dev.patrickgold.florisboard.ime.landscapeinput.LandscapeInputUiMode
@@ -158,13 +159,18 @@ class FlorisImeService : LifecycleInputMethodService() {
         /**
          * Hides the IME and launches [FlorisAppActivity].
          */
-        fun launchSettings() {
+        fun launchSettings(route: String? = null) {
             val ims = FlorisImeServiceReference.get() ?: return
             ims.requestHideSelf(0)
             ims.launchActivity(FlorisAppActivity::class) {
                 it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or
                     Intent.FLAG_ACTIVITY_CLEAR_TOP
+                if (route != null) {
+                    it.action = Intent.ACTION_VIEW
+                    it.addCategory(Intent.CATEGORY_BROWSABLE)
+                    it.data = android.net.Uri.parse("ui://florisboard/$route")
+                }
             }
         }
 
@@ -642,6 +648,7 @@ class FlorisImeService : LifecycleInputMethodService() {
                         modifier = Modifier.matchParentSize(),
                     )
                 }
+                KeyboardBackgroundLayer(Modifier.matchParentSize())
                 val configuration = LocalConfiguration.current
                 val bottomOffset by if (configuration.isOrientationPortrait()) {
                     prefs.keyboard.bottomOffsetPortrait

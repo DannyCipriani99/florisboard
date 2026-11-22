@@ -58,6 +58,8 @@ import dev.patrickgold.florisboard.app.settings.advanced.OtherScreen
 import dev.patrickgold.florisboard.app.settings.advanced.PhysicalKeyboardScreen
 import dev.patrickgold.florisboard.app.settings.advanced.RestoreScreen
 import dev.patrickgold.florisboard.app.settings.clipboard.ClipboardScreen
+import dev.patrickgold.florisboard.app.settings.additions.AdditionsScreen
+import dev.patrickgold.florisboard.app.settings.additions.LayoutEditorScreen
 import dev.patrickgold.florisboard.app.settings.expander.ExpanderScreen
 import dev.patrickgold.florisboard.app.settings.dictionary.DictionaryScreen
 import dev.patrickgold.florisboard.app.settings.dictionary.UserDictionaryScreen
@@ -172,6 +174,14 @@ object Routes {
         @Serializable
         @Deeplink("settings/expander")
         object Expander
+
+        @Serializable
+        @Deeplink("settings/additions")
+        object Additions
+
+        @Serializable
+        @Deeplink("settings/layout-editor")
+        object LayoutEditor
 
         @Serializable
         @Deeplink("settings/media")
@@ -317,6 +327,8 @@ object Routes {
 
             composableWithDeepLink(Settings.Clipboard::class) { ClipboardScreen() }
             composableWithDeepLink(Settings.Expander::class) { ExpanderScreen() }
+            composableWithDeepLink(Settings.Additions::class) { AdditionsScreen() }
+            composableWithDeepLink(Settings.LayoutEditor::class) { LayoutEditorScreen() }
 
             composableWithDeepLink(Settings.Media::class) { MediaScreen() }
 

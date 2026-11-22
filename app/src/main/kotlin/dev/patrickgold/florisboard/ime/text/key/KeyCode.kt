@@ -108,6 +108,10 @@ object KeyCode {
     const val TOGGLE_INCOGNITO_MODE =       -244
     const val TOGGLE_AUTOCORRECT =          -245
 
+    const val TEXT_EXPANDER =               -261
+    const val FIND_REPLACE =                -262
+    const val LAYOUT_EDITOR =               -263
+
     const val URI_COMPONENT_TLD =           -255
 
     const val SETTINGS =                    -301

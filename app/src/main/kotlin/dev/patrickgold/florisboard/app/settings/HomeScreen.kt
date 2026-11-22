@@ -148,8 +148,9 @@ fun HomeScreen() = FlorisScreen {
         )
         Preference(
             icon = Icons.Default.Edit,
-            title = stringRes(R.string.settings__expander__title),
-            onClick = { navController.navigate(Routes.Settings.Expander) },
+            title = stringRes(R.string.settings__additions__title),
+            summary = stringRes(R.string.settings__additions__summary),
+            onClick = { navController.navigate(Routes.Settings.Additions) },
         )
         Preference(
             icon = Icons.Default.Extension,
