@@ -111,7 +111,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     keySpecificPopupSet = extendedPopups?.get(KeyVariation.ALL)?.get(computedLabel) ?:
                         extendedPopupsDefault?.get(KeyVariation.ALL)?.get(computedLabel)
                 }
-                if (data.popup is CustomPopupSet) {
+                if (computed.popup is CustomPopupSet) {
                     popupSet = null
                     keySpecificPopupSet = null
                 }

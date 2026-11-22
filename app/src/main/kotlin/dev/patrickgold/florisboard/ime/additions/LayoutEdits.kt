@@ -114,7 +114,7 @@ object LayoutEditor {
     fun currentPopups(key: TextKey, keyboard: TextKeyboard): List<String> {
         fun entries(set: PopupSet<AbstractKeyData>?): List<AbstractKeyData> =
             if (set == null) emptyList() else listOfNotNull(set.main) + set.relevant
-        val own = key.data.popup
+        val own = runCatching { key.data.compute(DefaultComputingEvaluator)?.popup }.getOrNull()
         val sets = mutableListOf<PopupSet<AbstractKeyData>?>(own)
         if (own !is CustomPopupSet) {
             val label = runCatching { key.data.compute(DefaultComputingEvaluator)?.label }.getOrNull()?.lowercase()
