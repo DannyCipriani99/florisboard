@@ -24,6 +24,14 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.zIndex
+import kotlin.math.roundToInt
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.mutableStateListOf
@@ -104,6 +112,88 @@ private fun KeyBox(label: String, extra: Int, selected: Boolean, onClick: () -> 
                 style = MaterialTheme.typography.labelSmall,
                 color = if (selected) scheme.onPrimary else scheme.onSurfaceVariant,
             )
+        }
+    }
+}
+
+/**
+ * Popup characters laid out like the real long-press popup (up to 5 in one row, more in two rows) that can be
+ * rearranged by dragging a character onto another cell.
+ */
+@Composable
+private fun PopupDragGrid(
+    items: List<String>,
+    selected: Int?,
+    onSelect: (Int) -> Unit,
+    onMove: (from: Int, to: Int) -> Unit,
+) {
+    val n = items.size
+    if (n == 0) return
+    val bottomCount = if (n <= 5) 0 else n / 2
+    val top = (bottomCount until n).toList()
+    val bottom = (0 until bottomCount).toList()
+    val rows = if (bottomCount == 0) listOf(top) else listOf(top, bottom)
+    val cell = 44.dp
+    val gap = 4.dp
+    val step = with(LocalDensity.current) { (cell + gap).toPx() }
+    var dragging by remember { mutableStateOf<Int?>(null) }
+    var dx by remember { mutableStateOf(0f) }
+    var dy by remember { mutableStateOf(0f) }
+    val scheme = MaterialTheme.colorScheme
+
+    Column(verticalArrangement = Arrangement.spacedBy(gap)) {
+        rows.forEachIndexed { r, indices ->
+            Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
+                indices.forEachIndexed { c, itemIdx ->
+                    val isDragged = dragging == itemIdx
+                    Box(
+                        modifier = Modifier
+                            .size(cell)
+                            .zIndex(if (isDragged) 1f else 0f)
+                            .graphicsLayer {
+                                translationX = if (isDragged) dx else 0f
+                                translationY = if (isDragged) dy else 0f
+                            }
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                when {
+                                    isDragged -> scheme.tertiary
+                                    selected == itemIdx -> scheme.primary
+                                    else -> scheme.surface
+                                }
+                            )
+                            .border(1.dp, scheme.outline, RoundedCornerShape(8.dp))
+                            .clickable { onSelect(itemIdx) }
+                            .pointerInput(itemIdx, n, r, c) {
+                                detectDragGestures(
+                                    onDragStart = { dragging = itemIdx; dx = 0f; dy = 0f },
+                                    onDrag = { change, amount ->
+                                        change.consume()
+                                        dx += amount.x
+                                        dy += amount.y
+                                    },
+                                    onDragEnd = {
+                                        val tr = (r + (dy / step).roundToInt()).coerceIn(0, rows.size - 1)
+                                        val tc = (c + (dx / step).roundToInt()).coerceIn(0, rows[tr].size - 1)
+                                        val target = rows[tr][tc]
+                                        dragging = null
+                                        dx = 0f
+                                        dy = 0f
+                                        if (target != itemIdx) onMove(itemIdx, target)
+                                    },
+                                    onDragCancel = { dragging = null; dx = 0f; dy = 0f },
+                                )
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            items[itemIdx],
+                            maxLines = 1,
+                            color = if (selected == itemIdx) scheme.onPrimary else scheme.onSurface,
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -245,11 +335,20 @@ fun LayoutEditorScreen() = FlorisScreen {
                         Text(stringRes(R.string.settings__layout_editor__no_popups))
                     }
                     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                        FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            popupList.forEachIndexed { i, p ->
-                                KeyBox(label = p, extra = 0, selected = popupSel == i) { popupSel = i }
-                            }
-                        }
+                        PopupDragGrid(
+                            items = popupList,
+                            selected = popupSel,
+                            onSelect = { popupSel = it },
+                            onMove = { from, to ->
+                                val t = popupList.removeAt(from)
+                                popupList.add(to.coerceIn(0, popupList.size), t)
+                                popupSel = to
+                            },
+                        )
+                        Text(
+                            stringRes(R.string.settings__layout_editor__popup_grid_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
                         popupSel?.let { i ->
                             if (i in popupList.indices) {
                                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
