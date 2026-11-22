@@ -52,4 +52,12 @@
     <string name="panel__expander_off">الموسّع متوقف</string>
     <string name="panel__new_abbreviation">اختصار جديد</string>
     <string name="panel__save_from_clipboard">حفظ الحافظة</string>
+
+    <string name="settings__layout_editor__no_popups">لا توجد أحرف منبثقة</string>
+    <string name="settings__layout_editor__add_popup">إضافة أحرف منبثقة</string>
+    <string name="settings__layout_editor__apply_popups">تطبيق النوافذ المنبثقة</string>
+    <string name="settings__layout_editor__add_special">أزرار خاصة (Shift, Alt, Ctrl, Tab ...)</string>
+    <string name="panel__shortcuts">الاختصارات</string>
+    <string name="panel__shortcuts_edit">تعديل الاختصارات</string>
+    <string name="panel__field_expand">توسيع الحقل</string>
 </resources>

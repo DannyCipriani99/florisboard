@@ -46,6 +46,41 @@ object AdditionsPanel {
     var caseSensitive by mutableStateOf(false)
     var status by mutableStateOf("")
 
+    /** Caret positions (index in the text) of the virtual fields. */
+    var findCaret by mutableStateOf(0)
+    var replaceCaret by mutableStateOf(0)
+    var abbreviationCaret by mutableStateOf(0)
+
+    /** Larger multi-line fields. */
+    var expanded by mutableStateOf(false)
+
+    /** Expanded list of all text expander shortcuts. */
+    var showShortcuts by mutableStateOf(false)
+
+    fun caretOf(field: PanelField): Int = when (field) {
+        PanelField.FIND -> findCaret
+        PanelField.REPLACE -> replaceCaret
+        PanelField.ABBREVIATION -> abbreviationCaret
+    }
+
+    private fun setCaret(field: PanelField, value: Int) {
+        when (field) {
+            PanelField.FIND -> findCaret = value
+            PanelField.REPLACE -> replaceCaret = value
+            PanelField.ABBREVIATION -> abbreviationCaret = value
+        }
+    }
+
+    /** Moves the caret of the focused field by [delta] characters (negative = left). */
+    fun moveCaret(delta: Int) {
+        val text = focusedText()
+        setCaret(focus, (caretOf(focus) + delta).coerceIn(0, text.length))
+    }
+
+    fun caretToStart() = setCaret(focus, 0)
+
+    fun caretToEnd() = setCaret(focus, focusedText().length)
+
     fun toggle(target: AdditionsPanelKind) {
         if (kind == target) {
             close()
@@ -59,6 +94,7 @@ object AdditionsPanel {
     fun close() {
         kind = AdditionsPanelKind.NONE
         status = ""
+        showShortcuts = false
     }
 
     private fun focusedText(): String = when (focus) {
@@ -75,16 +111,31 @@ object AdditionsPanel {
         }
     }
 
+    private fun insertAtCaret(text: String) {
+        val current = focusedText()
+        val caret = caretOf(focus).coerceIn(0, current.length)
+        setFocusedText(current.substring(0, caret) + text + current.substring(caret))
+        setCaret(focus, caret + text.length)
+    }
+
+    private fun deleteBeforeCaret() {
+        val current = focusedText()
+        val caret = caretOf(focus).coerceIn(0, current.length)
+        if (caret == 0) return
+        setFocusedText(current.removeRange(caret - 1, caret))
+        setCaret(focus, caret - 1)
+    }
+
     /** Returns true if the key was consumed by the open panel and must not reach the edited app. */
     fun captureKey(data: KeyData): Boolean {
         if (kind == AdditionsPanelKind.NONE) return false
         if (kind == AdditionsPanelKind.EXPANDER && focus != PanelField.ABBREVIATION) return false
         when {
             data.code == KeyCode.DELETE -> {
-                setFocusedText(focusedText().dropLast(1))
+                deleteBeforeCaret()
             }
             data.code == KeyCode.SPACE -> {
-                if (focus != PanelField.ABBREVIATION) setFocusedText(focusedText() + " ")
+                if (focus != PanelField.ABBREVIATION) insertAtCaret(" ")
             }
             data.code == KeyCode.ENTER -> {
                 if (kind == AdditionsPanelKind.FIND_REPLACE) findNext()
@@ -93,7 +144,7 @@ object AdditionsPanel {
                 val text = data.asString(isForDisplay = false)
                 if (text.isEmpty()) return false
                 if (focus == PanelField.ABBREVIATION && text.any { it.isWhitespace() }) return true
-                setFocusedText(focusedText() + text)
+                insertAtCaret(text)
             }
             else -> return false
         }

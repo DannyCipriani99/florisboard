@@ -30,6 +30,7 @@ import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.appContext
 import dev.patrickgold.florisboard.ime.additions.AdditionsPanel
+import dev.patrickgold.florisboard.ime.additions.ModifierKeys
 import dev.patrickgold.florisboard.ime.additions.AdditionsPanelKind
 import dev.patrickgold.florisboard.clipboardManager
 import dev.patrickgold.florisboard.editorInstance
@@ -800,6 +801,10 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
             KeyCode.FORWARD_DELETE_WORD -> handleForwardDelete(OperationUnit.WORDS)
             KeyCode.IME_SHOW_UI -> FlorisImeService.showUi()
             KeyCode.IME_HIDE_UI -> FlorisImeService.hideUi()
+            KeyCode.CTRL, KeyCode.CTRL_LOCK -> ModifierKeys.ctrl = !ModifierKeys.ctrl
+            KeyCode.ALT, KeyCode.ALT_LOCK -> ModifierKeys.alt = !ModifierKeys.alt
+            KeyCode.TAB -> editorInstance.sendDownUpKeyEvent(android.view.KeyEvent.KEYCODE_TAB)
+            KeyCode.ESCAPE -> editorInstance.sendDownUpKeyEvent(android.view.KeyEvent.KEYCODE_ESCAPE)
             KeyCode.TEXT_EXPANDER -> AdditionsPanel.toggle(AdditionsPanelKind.EXPANDER)
             KeyCode.FIND_REPLACE -> AdditionsPanel.toggle(AdditionsPanelKind.FIND_REPLACE)
             KeyCode.LAYOUT_EDITOR -> FlorisImeService.launchSettings("settings/layout-editor")
@@ -873,8 +878,10 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
                             if (!UCharacter.isUAlphabetic(UCharacter.codePointAt(text, 0))) {
                                 nlpManager.getAutoCommitCandidate()?.let { commitCandidate(it) }
                             }
-                            editorInstance.commitChar(text)
-                            tryExpandText(onSpace = false)
+                            if (!ModifierKeys.trySendShortcut(editorInstance, text)) {
+                                editorInstance.commitChar(text)
+                                tryExpandText(onSpace = false)
+                            }
                         }
                         else -> {
                             flogError(LogTopic.KEY_EVENTS) { "Received unknown key: $data" }

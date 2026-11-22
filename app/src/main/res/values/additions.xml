@@ -52,4 +52,12 @@
     <string name="panel__expander_off">Expander off</string>
     <string name="panel__new_abbreviation">New abbreviation</string>
     <string name="panel__save_from_clipboard">Save clipboard</string>
+ 
+    <string name="settings__layout_editor__no_popups">No popup characters</string>
+    <string name="settings__layout_editor__add_popup">Add popup characters</string>
+    <string name="settings__layout_editor__apply_popups">Apply popups</string>
+    <string name="settings__layout_editor__add_special">Special keys (Shift, Alt, Ctrl, Tab, ...)</string>
+    <string name="panel__shortcuts">Shortcuts</string>
+    <string name="panel__shortcuts_edit">Edit shortcuts</string>
+    <string name="panel__field_expand">Expand field</string>
 </resources>

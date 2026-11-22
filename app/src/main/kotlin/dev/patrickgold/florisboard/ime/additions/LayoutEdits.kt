@@ -18,13 +18,16 @@ package dev.patrickgold.florisboard.ime.additions
 
 import dev.patrickgold.florisboard.ime.keyboard.AbstractKeyData
 import dev.patrickgold.florisboard.ime.keyboard.DefaultComputingEvaluator
+import dev.patrickgold.florisboard.ime.text.key.KeyVariation
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
 import dev.patrickgold.florisboard.ime.popup.PopupSet
+import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.keyboard.AutoTextKeyData
 import dev.patrickgold.florisboard.ime.text.keyboard.MultiTextKeyData
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKey
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
+import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboard
 import dev.patrickgold.jetpref.datastore.model.PreferenceSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -49,7 +52,17 @@ data class LayoutEdit(
     val text: String = "",
     /** Custom long-press popup entries (POPUPS and INSERT). */
     val popups: List<String> = emptyList(),
+    /** Key code of a special key (Shift, Alt, Ctrl, Tab, ...) to insert when [text] is empty (INSERT). */
+    val keyCode: Int = 0,
 )
+
+/** Popup set created from manual edits. Replaces the language's default popups of a key instead of extending them. */
+class CustomPopupSet(
+    main: AbstractKeyData? = null,
+    relevant: List<AbstractKeyData> = emptyList(),
+) : PopupSet<AbstractKeyData>(main, relevant)
+
+class SpecialKey(val label: String, val data: TextKeyData)
 
 @Serializable
 data class LayoutEditList(
@@ -67,6 +80,55 @@ data class LayoutEditList(
 }
 
 object LayoutEditor {
+    private fun special(label: String, type: KeyType, code: Int, text: String) =
+        SpecialKey(label, TextKeyData(type = type, code = code, label = text))
+
+    /** Special keys that can be added to the keyboard from the layout editor. */
+    val SpecialKeys: List<SpecialKey> = listOf(
+        SpecialKey("Shift", TextKeyData.SHIFT),
+        SpecialKey("⌫", TextKeyData.DELETE),
+        special("Enter", KeyType.ENTER_EDITING, KeyCode.ENTER, "enter"),
+        SpecialKey("Space", TextKeyData.SPACE),
+        special("Ctrl", KeyType.MODIFIER, KeyCode.CTRL, "Ctrl"),
+        special("Alt", KeyType.MODIFIER, KeyCode.ALT, "Alt"),
+        special("Tab", KeyType.FUNCTION, KeyCode.TAB, "Tab"),
+        special("Esc", KeyType.FUNCTION, KeyCode.ESCAPE, "Esc"),
+        SpecialKey("←", TextKeyData.ARROW_LEFT),
+        SpecialKey("→", TextKeyData.ARROW_RIGHT),
+        SpecialKey("↑", TextKeyData.ARROW_UP),
+        SpecialKey("↓", TextKeyData.ARROW_DOWN),
+        SpecialKey("Copy", TextKeyData.CLIPBOARD_COPY),
+        SpecialKey("Paste", TextKeyData.CLIPBOARD_PASTE),
+        SpecialKey("Cut", TextKeyData.CLIPBOARD_CUT),
+        SpecialKey("Select all", TextKeyData.CLIPBOARD_SELECT_ALL),
+        SpecialKey("Undo", TextKeyData.UNDO),
+        SpecialKey("Redo", TextKeyData.REDO),
+        SpecialKey("🌐", TextKeyData.LANGUAGE_SWITCH),
+        SpecialKey("?123", TextKeyData.VIEW_SYMBOLS),
+        SpecialKey("ABC", TextKeyData.VIEW_CHARACTERS),
+    )
+
+    fun specialKeyData(code: Int): TextKeyData? = SpecialKeys.firstOrNull { it.data.code == code }?.data
+
+    /** Entries (characters) of the popups a key currently shows on long press, for display in the editor. */
+    fun currentPopups(key: TextKey, keyboard: TextKeyboard): List<String> {
+        fun entries(set: PopupSet<AbstractKeyData>?): List<AbstractKeyData> =
+            if (set == null) emptyList() else listOfNotNull(set.main) + set.relevant
+        val own = key.data.popup
+        val sets = mutableListOf<PopupSet<AbstractKeyData>?>(own)
+        if (own !is CustomPopupSet) {
+            val label = runCatching { key.data.compute(DefaultComputingEvaluator)?.label }.getOrNull()?.lowercase()
+            if (label != null) {
+                sets += keyboard.extendedPopupMapping?.get(KeyVariation.ALL)?.get(label)
+                sets += keyboard.extendedPopupMappingDefault?.get(KeyVariation.ALL)?.get(label)
+            }
+        }
+        return sets.flatMap { entries(it) }
+            .mapNotNull { runCatching { it.compute(DefaultComputingEvaluator)?.asString(true) }.getOrNull() }
+            .filter { it.isNotBlank() }
+            .distinct()
+    }
+
     val EditableModes = listOf(KeyboardMode.CHARACTERS, KeyboardMode.SYMBOLS, KeyboardMode.SYMBOLS2)
 
     fun createKeyData(text: String, popups: List<String> = emptyList()): TextKeyData? {
@@ -92,11 +154,12 @@ object LayoutEditor {
     private fun popupSetOf(popups: List<String>): PopupSet<AbstractKeyData>? {
         val items = popups.mapNotNull { createAnyKeyData(it, emptyList()) }
         if (items.isEmpty()) return null
-        return PopupSet(main = null, relevant = items)
+        return CustomPopupSet(main = null, relevant = items)
     }
 
     private fun withPopups(data: AbstractKeyData, popups: List<String>): AbstractKeyData {
-        val set = popupSetOf(popups)
+        val set: PopupSet<AbstractKeyData> =
+            CustomPopupSet(null, popups.mapNotNull { createAnyKeyData(it, emptyList()) })
         return when (data) {
             is TextKeyData -> data.copy(popup = set)
             is AutoTextKeyData -> AutoTextKeyData(data.type, data.code, data.label, data.groupId, set)
@@ -131,7 +194,8 @@ object LayoutEditor {
                 }
                 LayoutEditOp.INSERT -> {
                     val row = rows.getOrNull(e.row) ?: continue
-                    val data = createAnyKeyData(e.text, e.popups) ?: continue
+                    val data = (if (e.text.isEmpty()) specialKeyData(e.keyCode) else createAnyKeyData(e.text, e.popups))
+                        ?: continue
                     row.add(e.col.coerceIn(0, row.size), TextKey(data))
                 }
                 LayoutEditOp.POPUPS -> {

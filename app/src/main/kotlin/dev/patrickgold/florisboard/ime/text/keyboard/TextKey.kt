@@ -17,6 +17,7 @@
 package dev.patrickgold.florisboard.ime.text.keyboard
 
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.ime.additions.CustomPopupSet
 import dev.patrickgold.florisboard.ime.keyboard.AbstractKeyData
 import dev.patrickgold.florisboard.ime.keyboard.ComputingEvaluator
 import dev.patrickgold.florisboard.ime.keyboard.Key
@@ -109,6 +110,10 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                 if (extLabel != computedLabel) {
                     keySpecificPopupSet = extendedPopups?.get(KeyVariation.ALL)?.get(computedLabel) ?:
                         extendedPopupsDefault?.get(KeyVariation.ALL)?.get(computedLabel)
+                }
+                if (data.popup is CustomPopupSet) {
+                    popupSet = null
+                    keySpecificPopupSet = null
                 }
                 computedPopups.apply {
                     keySpecificPopupSet?.let { merge(it, evaluator) }
